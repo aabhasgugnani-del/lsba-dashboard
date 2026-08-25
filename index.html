@@ -354,7 +354,8 @@
     <div class="form-row" id="confirm-row" style="display:none"><label>Confirm Password</label><input type="password" class="field-input" id="login-password-confirm" placeholder="••••••••" style="width:100%"></div>
     <div class="fieldnote" id="login-error" style="color:var(--crit);display:none;margin-bottom:8px"></div>
     <button class="btn primary" id="login-signin-btn" style="width:100%;justify-content:center;margin-bottom:8px" onclick="doSignIn()">Sign in</button>
-    <button class="btn" id="login-signup-btn" style="width:100%;justify-content:center" onclick="onSignUpClick()">First time? Create your account</button>
+    <button class="btn" id="login-signup-btn" style="width:100%;justify-content:center;margin-bottom:8px" onclick="onSignUpClick()">First time? Create your account</button>
+    <button class="subtle-btn" style="width:100%;text-align:center" onclick="forgotPassword()">Forgot password?</button>
     <div class="fieldnote" style="text-align:center;margin-top:16px">Access is limited to approved team emails.</div>
     <div class="fieldnote" style="text-align:center;margin-top:4px" id="version-badge-login"></div>
   </div>
@@ -412,7 +413,7 @@
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-app.js";
   import {
     getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword,
-    signOut, setPersistence, browserLocalPersistence
+    signOut, setPersistence, browserLocalPersistence, sendPasswordResetEmail
   } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-auth.js";
   import {
     getFirestore, collection, doc, addDoc, setDoc, updateDoc, deleteDoc, getDoc,
@@ -433,7 +434,7 @@
   setPersistence(auth, browserLocalPersistence).catch(()=>{});
 
   window.__fb = {
-    auth, db, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut,
+    auth, db, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, sendPasswordResetEmail,
     collection, doc, addDoc, setDoc, updateDoc, deleteDoc, getDoc, onSnapshot, query, where
   };
   window.__fbReady = true;
@@ -442,7 +443,7 @@
 
 <script>
 /* ================= APP VERSION ================= */
-const APP_VERSION = '2.1.0';
+const APP_VERSION = '2.2.0';
 const ICONS = {
   dashboard:'<path d="M4 4h7v9H4zM13 4h7v5h-7zM13 12h7v8h-7zM4 16h7v4H4z"/>',
   tasks:'<path d="M4 6h16M4 12h16M4 18h10"/><circle cx="4" cy="6" r="0"/>',
@@ -512,6 +513,19 @@ function resetSignupUI(){
   document.getElementById('confirm-row').style.display = 'none';
   document.getElementById('login-password-confirm').value = '';
   document.getElementById('login-signup-btn').textContent = 'First time? Create your account';
+}
+async function forgotPassword(){
+  hideLoginError();
+  const email = document.getElementById('login-email').value.trim();
+  if(!email) return showLoginError('Enter your email above first, then click "Forgot password?" again.');
+  try{
+    await window.__fb.sendPasswordResetEmail(window.__fb.auth, email);
+    showLoginError('Check your email for a password reset link.');
+    document.getElementById('login-error').style.color = 'var(--good)';
+  }catch(e){
+    showLoginError(friendlyAuthError(e));
+    document.getElementById('login-error').style.color = 'var(--crit)';
+  }
 }
 async function doSignIn(){
   resetSignupUI();
@@ -1481,10 +1495,23 @@ function renderTeam(){
         <td>${u.department}</td>
         <td class="num">${open}</td>
         <td>${u.active?'<span class="pill status-Approved">Active</span>':'<span class="pill status-Rejected">Inactive</span>'}</td>
-        <td>${isSuper() && u.id!==STATE.currentUserId ?`<button class="btn sm" onclick="toggleActive('${u.id}')">${u.active?'Deactivate':'Activate'}</button>`:''}</td>
+        <td style="white-space:nowrap">
+          ${isSuper()?`<button class="btn sm" onclick="resetUserPassword('${u.id}')" title="Email a password reset link">Reset password</button>`:''}
+          ${isSuper() && u.id!==STATE.currentUserId ?` <button class="btn sm" onclick="toggleActive('${u.id}')">${u.active?'Deactivate':'Activate'}</button>`:''}
+        </td>
       </tr>`;
     }).join('')}
     </tbody></table></div></div>`;
+}
+async function resetUserPassword(id){
+  const u = userById(id); if(!u) return;
+  if(!confirm(`Send a password reset link to ${u.name} (${u.email})?\n\nTheir tasks and profile are unaffected — they'll just be able to set a new password from the emailed link.`)) return;
+  try{
+    await window.__fb.sendPasswordResetEmail(window.__fb.auth, u.email);
+    toast('Password reset email sent to '+u.email);
+  }catch(e){
+    toast('Could not send reset email: '+(e.message||e.code||'error'));
+  }
 }
 async function changeRole(id, role){
   const {db, doc, updateDoc} = window.__fb;
