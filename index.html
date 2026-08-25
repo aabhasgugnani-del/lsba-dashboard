@@ -1,0 +1,1691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>LSBA Dashboard</title>
+<style>
+  :root{
+    --ink:#1A1F1D; --ink-soft:#3E453F; --muted:#5B655F;
+    --paper:#F0F2EC; --surface:#FFFFFF; --surface-2:#F7F8F4;
+    --border:rgba(26,31,29,0.12); --border-strong:rgba(26,31,29,0.22);
+    --accent:#4B4F9E; --accent-ink:#FFFFFF; --accent-soft:rgba(75,79,158,0.12); --accent-strong:#3A3E82;
+    --good:#2E8F5B; --good-soft:rgba(46,143,91,0.14);
+    --warn:#B8790F; --warn-soft:rgba(184,121,15,0.14);
+    --crit:#C4453A; --crit-soft:rgba(196,69,58,0.14);
+    --info:#1C7FB8; --info-soft:rgba(28,127,184,0.14);
+    --cat-1:#4B4F9E; --cat-2:#1F8A6F; --cat-3:#C9762E; --cat-4:#B23B6E; --cat-5:#1C7FB8; --cat-6:#7A8B3C;
+    --shadow:0 1px 2px rgba(20,24,20,0.05), 0 10px 30px -14px rgba(20,24,20,0.22);
+    --radius:10px; --radius-sm:7px;
+    --font-ui:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --font-display:Georgia,"Iowan Old Style","Palatino Linotype","Times New Roman",serif;
+    --font-mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --ink:#E7E9E3; --ink-soft:#C7CCC3; --muted:#9AA39C;
+      --paper:#14171A; --surface:#1B1F23; --surface-2:#20242A;
+      --border:rgba(255,255,255,0.10); --border-strong:rgba(255,255,255,0.20);
+      --accent:#8285D6; --accent-ink:#12131F; --accent-soft:rgba(130,133,214,0.18); --accent-strong:#a3a5e3;
+      --good:#3DA483; --good-soft:rgba(61,164,131,0.16);
+      --warn:#C87527; --warn-soft:rgba(200,117,39,0.16);
+      --crit:#DD6157; --crit-soft:rgba(221,97,87,0.16);
+      --info:#3D96C4; --info-soft:rgba(61,150,196,0.16);
+      --cat-1:#8285D6; --cat-2:#3DA483; --cat-3:#C87527; --cat-4:#C15D85; --cat-5:#3D96C4; --cat-6:#89974A;
+      --shadow:0 1px 2px rgba(0,0,0,0.35), 0 10px 30px -14px rgba(0,0,0,0.55);
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#E7E9E3; --ink-soft:#C7CCC3; --muted:#9AA39C;
+    --paper:#14171A; --surface:#1B1F23; --surface-2:#20242A;
+    --border:rgba(255,255,255,0.10); --border-strong:rgba(255,255,255,0.20);
+    --accent:#8285D6; --accent-ink:#12131F; --accent-soft:rgba(130,133,214,0.18); --accent-strong:#a3a5e3;
+    --good:#3DA483; --good-soft:rgba(61,164,131,0.16);
+    --warn:#C87527; --warn-soft:rgba(200,117,39,0.16);
+    --crit:#DD6157; --crit-soft:rgba(221,97,87,0.16);
+    --info:#3D96C4; --info-soft:rgba(61,150,196,0.16);
+    --cat-1:#8285D6; --cat-2:#3DA483; --cat-3:#C87527; --cat-4:#C15D85; --cat-5:#3D96C4; --cat-6:#89974A;
+    --shadow:0 1px 2px rgba(0,0,0,0.35), 0 10px 30px -14px rgba(0,0,0,0.55);
+  }
+  :root[data-theme="light"]{
+    --ink:#1A1F1D; --ink-soft:#3E453F; --muted:#5B655F;
+    --paper:#F0F2EC; --surface:#FFFFFF; --surface-2:#F7F8F4;
+    --border:rgba(26,31,29,0.12); --border-strong:rgba(26,31,29,0.22);
+    --accent:#4B4F9E; --accent-ink:#FFFFFF; --accent-soft:rgba(75,79,158,0.12); --accent-strong:#3A3E82;
+    --good:#2E8F5B; --good-soft:rgba(46,143,91,0.14);
+    --warn:#B8790F; --warn-soft:rgba(184,121,15,0.14);
+    --crit:#C4453A; --crit-soft:rgba(196,69,58,0.14);
+    --info:#1C7FB8; --info-soft:rgba(28,127,184,0.14);
+    --cat-1:#4B4F9E; --cat-2:#1F8A6F; --cat-3:#C9762E; --cat-4:#B23B6E; --cat-5:#1C7FB8; --cat-6:#7A8B3C;
+    --shadow:0 1px 2px rgba(20,24,20,0.05), 0 10px 30px -14px rgba(20,24,20,0.22);
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;height:100%;overflow-x:hidden;}
+  body{
+    font-family:var(--font-ui); color:var(--ink); background:var(--paper);
+    font-size:13.5px; line-height:1.45; -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:var(--accent-soft);}
+  a{color:inherit;}
+  button{font-family:inherit;color:inherit;}
+  input,select,textarea{color:inherit;}
+  ::-webkit-scrollbar{width:10px;height:10px;}
+  ::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:8px;}
+  ::-webkit-scrollbar-track{background:transparent;}
+
+  h1,h2,h3,h4{font-family:var(--font-display);font-weight:600;margin:0;text-wrap:balance;letter-spacing:-0.01em;}
+  .num{font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1;}
+  .mono{font-family:var(--font-mono);}
+
+  #app{display:flex;min-height:100vh;}
+  .hidden{display:none!important;}
+
+  /* ---------- Sidebar ---------- */
+  #sidebar{
+    width:216px; flex:0 0 216px; background:var(--surface); border-right:1px solid var(--border);
+    display:flex; flex-direction:column; padding:16px 12px; gap:4px; position:sticky; top:0; height:100vh; overflow-y:auto;
+  }
+  #sidebar.collapsed{width:64px;flex-basis:64px;}
+  .brand{display:flex;align-items:center;gap:9px;padding:6px 8px 14px;}
+  .brand-mark{
+    width:30px;height:30px;border-radius:8px;background:linear-gradient(155deg,var(--accent),var(--accent-strong));
+    color:var(--accent-ink);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);
+    font-weight:700;font-size:14px;flex:none;
+  }
+  .brand-text{font-family:var(--font-display);font-weight:700;font-size:16.5px;white-space:nowrap;overflow:hidden;}
+  .brand-sub{font-size:10.5px;color:var(--muted);letter-spacing:.04em;text-transform:uppercase;white-space:nowrap;}
+  #sidebar.collapsed .brand-text,#sidebar.collapsed .brand-sub,#sidebar.collapsed .navlabel,#sidebar.collapsed .navsection{display:none;}
+
+  .navsection{font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding:14px 10px 4px;}
+  .navitem{
+    display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:var(--radius-sm);cursor:pointer;
+    color:var(--ink-soft);font-size:13px;font-weight:500;position:relative;
+  }
+  .navitem:hover{background:var(--surface-2);}
+  .navitem.active{background:var(--accent-soft);color:var(--accent);}
+  .navitem .ic{width:17px;height:17px;flex:none;}
+  .navitem .badge{
+    margin-left:auto;background:var(--crit);color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:20px;
+  }
+  .navcollapse{margin-top:auto;display:flex;justify-content:flex-end;padding:6px;}
+  .iconbtn{width:28px;height:28px;border-radius:7px;border:1px solid var(--border);background:var(--surface);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);flex:none;}
+  .iconbtn:hover{background:var(--surface-2);color:var(--ink);}
+  .mobile-menu-btn{display:none;}
+  .sidebar-backdrop{position:fixed;inset:0;background:rgba(10,12,10,0.45);z-index:80;}
+
+  /* ---------- Topbar ---------- */
+  #main{flex:1;min-width:0;display:flex;flex-direction:column;}
+  #topbar{
+    height:56px;flex:none;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:14px;
+    padding:0 20px;background:var(--paper);position:sticky;top:0;z-index:20;
+  }
+  .viewtitle{font-family:var(--font-display);font-size:18px;font-weight:700;white-space:nowrap;}
+  .search-wrap{position:relative;flex:1;max-width:380px;min-width:120px;}
+  .search-wrap input{
+    width:100%;padding:7px 10px 7px 30px;border-radius:8px;border:1px solid var(--border);background:var(--surface);
+    color:var(--ink);font-size:12.5px;
+  }
+  .search-wrap input:focus{outline:2px solid var(--accent);outline-offset:-1px;}
+  .search-wrap .ic{position:absolute;left:9px;top:50%;transform:translateY(-50%);width:14px;height:14px;color:var(--muted);}
+  .top-spacer{flex:1;}
+  .roleswitch{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);}
+  .roleswitch select{
+    border:1px solid var(--border);background:var(--surface);color:var(--ink);border-radius:7px;padding:5px 7px;font-size:12px;
+  }
+  .btn{
+    display:inline-flex;align-items:center;gap:6px;border-radius:8px;border:1px solid var(--border);background:var(--surface);
+    color:var(--ink);padding:7px 12px;font-size:12.5px;font-weight:600;cursor:pointer;white-space:nowrap;
+  }
+  .btn:hover{background:var(--surface-2);}
+  .btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);}
+  .btn.primary:hover{background:var(--accent-strong);border-color:var(--accent-strong);}
+  .btn.danger{color:var(--crit);}
+  .btn.ghost{border-color:transparent;background:transparent;}
+  .btn.ghost:hover{background:var(--surface-2);}
+  .btn.sm{padding:4px 9px;font-size:11.5px;}
+  .btn:disabled{opacity:.45;cursor:not-allowed;}
+  .btn .ic{width:14px;height:14px;}
+
+  .iconbell{position:relative;width:32px;height:32px;border-radius:8px;border:1px solid var(--border);background:var(--surface);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--ink-soft);flex:none;}
+  .iconbell:hover{background:var(--surface-2);}
+  .iconbell .dot{position:absolute;top:5px;right:6px;width:7px;height:7px;border-radius:50%;background:var(--crit);border:1.5px solid var(--surface);}
+  .avatar{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700;flex:none;}
+
+  /* dropdown panel */
+  .dropdown{position:absolute;top:48px;right:20px;width:340px;max-width:92vw;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);z-index:60;overflow:hidden;}
+  .dropdown-head{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid var(--border);font-weight:700;font-size:12.5px;}
+  .dropdown-body{max-height:380px;overflow-y:auto;}
+  .notif-item{display:flex;gap:10px;padding:10px 14px;border-bottom:1px solid var(--border);cursor:pointer;}
+  .notif-item:hover{background:var(--surface-2);}
+  .notif-item.unread{background:var(--accent-soft);}
+  .notif-dot{width:7px;height:7px;border-radius:50%;background:var(--accent);flex:none;margin-top:5px;}
+  .notif-item.read .notif-dot{visibility:hidden;}
+  .notif-text{font-size:12.3px;}
+  .notif-time{font-size:11px;color:var(--muted);margin-top:2px;}
+
+  /* ---------- View root ---------- */
+  #view-root{padding:22px 26px 60px;max-width:1400px;width:100%;margin:0 auto;}
+  .view-head{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:18px;gap:12px;flex-wrap:wrap;}
+  .view-head p{color:var(--muted);margin:4px 0 0;font-size:13px;}
+  .head-actions{display:flex;gap:8px;flex-wrap:wrap;}
+
+  /* ---------- Grid / cards ---------- */
+  .grid{display:grid;gap:14px;}
+  .grid-kpi{grid-template-columns:repeat(4,1fr);}
+  .grid-2{grid-template-columns:1.3fr 1fr;}
+  .grid-3{grid-template-columns:repeat(3,1fr);}
+  .grid-charts{grid-template-columns:repeat(2,1fr);}
+  @media (max-width:1080px){.grid-kpi{grid-template-columns:repeat(2,1fr);} .grid-2{grid-template-columns:1fr;} .grid-charts{grid-template-columns:1fr;} .grid-3{grid-template-columns:1fr;}}
+
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;}
+  .card-title{font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:700;margin-bottom:2px;}
+  .card-sub{font-size:11.5px;color:var(--muted);}
+
+  .kpi-card{display:flex;flex-direction:column;gap:6px;}
+  .kpi-top{display:flex;align-items:center;justify-content:space-between;}
+  .kpi-value{font-family:var(--font-display);font-size:29px;font-weight:700;line-height:1;}
+  .kpi-delta{font-size:11px;font-weight:700;padding:2px 6px;border-radius:20px;}
+  .kpi-delta.up{color:var(--good);background:var(--good-soft);}
+  .kpi-delta.down{color:var(--crit);background:var(--crit-soft);}
+  .kpi-delta.flat{color:var(--muted);background:var(--surface-2);}
+  .kpi-label{font-size:12px;color:var(--muted);font-weight:600;}
+  .kpi-spark{margin-top:2px;}
+
+  .chart-card .chart-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+  .legend{display:flex;gap:12px;flex-wrap:wrap;font-size:11.5px;color:var(--muted);}
+  .legend-item{display:flex;align-items:center;gap:5px;}
+  .legend-swatch{width:9px;height:9px;border-radius:2.5px;flex:none;}
+  .chart-tooltip{
+    position:fixed;pointer-events:none;background:var(--ink);color:var(--paper);font-size:11.5px;padding:6px 9px;border-radius:7px;
+    z-index:200;opacity:0;transform:translate(-50%,-115%);transition:opacity .08s;white-space:nowrap;box-shadow:var(--shadow);
+  }
+  @media (prefers-color-scheme:dark){.chart-tooltip{background:var(--surface-2);color:var(--ink);border:1px solid var(--border);}}
+  :root[data-theme="dark"] .chart-tooltip{background:var(--surface-2);color:var(--ink);border:1px solid var(--border);}
+  .chart-tooltip.show{opacity:1;}
+
+  /* pills / chips */
+  .pill{display:inline-flex;align-items:center;gap:5px;padding:2.5px 8px;border-radius:20px;font-size:11px;font-weight:700;white-space:nowrap;}
+  .pill.status-Pending{background:var(--surface-2);color:var(--muted);}
+  .pill.status-InProgress{background:var(--info-soft);color:var(--info);}
+  .pill.status-Submitted{background:var(--warn-soft);color:var(--warn);}
+  .pill.status-Approved{background:var(--good-soft);color:var(--good);}
+  .pill.status-Rejected{background:var(--crit-soft);color:var(--crit);}
+  .pill.status-Completed{background:var(--accent-soft);color:var(--accent);}
+  .pill.pr-High{background:var(--crit-soft);color:var(--crit);}
+  .pill.pr-Medium{background:var(--warn-soft);color:var(--warn);}
+  .pill.pr-Low{background:var(--surface-2);color:var(--muted);}
+  .pill.overdue{background:var(--crit-soft);color:var(--crit);}
+  .dot-ind{width:6px;height:6px;border-radius:50%;flex:none;}
+  .tag{display:inline-flex;padding:2px 7px;border-radius:6px;background:var(--surface-2);color:var(--ink-soft);font-size:11px;border:1px solid var(--border);}
+
+  /* activity feed */
+  .activity-row{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);}
+  .activity-row:last-child{border-bottom:none;}
+  .act-icon{width:26px;height:26px;border-radius:50%;background:var(--surface-2);display:flex;align-items:center;justify-content:center;flex:none;color:var(--muted);}
+  .act-text{font-size:12.5px;}
+  .act-time{font-size:11px;color:var(--muted);}
+
+  /* table */
+  table{width:100%;border-collapse:collapse;font-size:12.6px;}
+  th{text-align:left;font-size:10.8px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);padding:8px 10px;border-bottom:1px solid var(--border);font-weight:700;white-space:nowrap;}
+  td{padding:9px 10px;border-bottom:1px solid var(--border);vertical-align:middle;}
+  tr.taskrow{cursor:pointer;}
+  tr.taskrow:hover{background:var(--surface-2);}
+  .table-wrap{overflow-x:auto;}
+  .checkbox{width:15px;height:15px;accent-color:var(--accent);}
+  .titlecell{font-weight:600;}
+  .titlecell .id{color:var(--muted);font-weight:400;font-family:var(--font-mono);font-size:10.8px;display:block;}
+  .userchip{display:flex;align-items:center;gap:6px;}
+  .userchip .avatar{width:20px;height:20px;font-size:9px;}
+
+  .toolbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:14px;}
+  select,.field-input{border:1px solid var(--border);background:var(--surface);color:var(--ink);border-radius:8px;padding:6.5px 9px;font-size:12.3px;}
+  .toolbar .sep{width:1px;height:20px;background:var(--border);}
+  .bulkbar{display:flex;align-items:center;gap:8px;background:var(--accent-soft);border:1px solid var(--accent);border-radius:8px;padding:8px 12px;margin-bottom:10px;font-size:12.3px;color:var(--accent);flex-wrap:wrap;}
+
+  /* Kanban */
+  .kanban{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;align-items:start;}
+  @media (max-width:1100px){.kanban{grid-template-columns:1fr;}}
+  .kcol{background:var(--surface-2);border-radius:var(--radius);padding:10px;min-height:120px;}
+  .kcol-head{display:flex;align-items:center;justify-content:space-between;padding:4px 4px 10px;font-weight:700;font-size:12px;}
+  .kcol-count{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:1px 8px;font-size:11px;color:var(--muted);}
+  .kcard{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px;margin-bottom:8px;cursor:grab;box-shadow:var(--shadow);}
+  .kcard:active{cursor:grabbing;}
+  .kcard.dragging{opacity:.4;}
+  .kcard-title{font-size:12.3px;font-weight:600;margin-bottom:6px;}
+  .kcard-meta{display:flex;align-items:center;justify-content:space-between;}
+  .kcol.dragover{outline:2px dashed var(--accent);outline-offset:-4px;}
+
+  /* Calendar */
+  .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;}
+  .cal-dow{font-size:10.8px;text-transform:uppercase;color:var(--muted);text-align:center;padding-bottom:4px;font-weight:700;}
+  .cal-cell{background:var(--surface);border:1px solid var(--border);border-radius:8px;min-height:96px;padding:6px;font-size:11px;}
+  .cal-cell.other-month{opacity:.4;}
+  .cal-cell.today{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset;}
+  .cal-daynum{font-weight:700;margin-bottom:4px;font-family:var(--font-mono);}
+  .cal-chip{display:block;background:var(--surface-2);border-radius:5px;padding:2px 5px;margin-bottom:3px;font-size:10.5px;cursor:pointer;border-left:3px solid var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .cal-chip.pr-High{border-color:var(--crit);}
+  .cal-chip.pr-Medium{border-color:var(--warn);}
+  .cal-chip.pr-Low{border-color:var(--info);}
+
+  /* Modal / slideover */
+  .overlay{position:fixed;inset:0;background:rgba(10,12,10,0.42);z-index:90;display:flex;justify-content:flex-end;}
+  .overlay.center{align-items:center;justify-content:center;}
+  .slideover{width:560px;max-width:94vw;background:var(--surface);height:100%;overflow-y:auto;box-shadow:var(--shadow);}
+  .modal{width:520px;max-width:92vw;background:var(--surface);border-radius:var(--radius);box-shadow:var(--shadow);max-height:88vh;overflow-y:auto;}
+  .modal.wide{width:640px;}
+  .panel-head{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--surface);z-index:5;}
+  .panel-body{padding:18px 20px 40px;}
+  .form-row{margin-bottom:14px;}
+  .form-row label{display:block;font-size:11.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.03em;margin-bottom:5px;}
+  .form-row input[type=text],.form-row input[type=date],.form-row input[type=number],.form-row textarea,.form-row select{
+    width:100%;border:1px solid var(--border);background:var(--paper);color:var(--ink);border-radius:8px;padding:8px 10px;font-size:12.8px;font-family:inherit;
+  }
+  .form-row select:disabled{opacity:.6;cursor:not-allowed;}
+  .form-row textarea{min-height:70px;resize:vertical;}
+  .form-2col{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .checklist-row{display:flex;align-items:center;gap:8px;padding:5px 0;}
+  .checklist-row input[type=text]{flex:1;border:none;background:transparent;border-bottom:1px dashed var(--border);padding:3px 2px;}
+  .checklist-row.done input[type=text]{text-decoration:line-through;color:var(--muted);}
+  .subtle-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:11.5px;}
+  .subtle-btn:hover{color:var(--ink);}
+
+  .taskhead-title{font-family:var(--font-display);font-size:19px;font-weight:700;margin-bottom:6px;}
+  .meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 16px;margin:14px 0;padding:12px;background:var(--surface-2);border-radius:8px;font-size:12px;}
+  .meta-grid .k{color:var(--muted);}
+  .section-title{font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);font-weight:700;margin:18px 0 8px;}
+  .proof-link{display:flex;align-items:center;gap:7px;padding:6px 9px;border:1px solid var(--border);border-radius:7px;margin-bottom:6px;font-size:12px;}
+  .proof-link .ic{width:14px;height:14px;color:var(--accent);flex:none;}
+  .att-chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--border);border-radius:7px;padding:5px 8px;font-size:11.5px;margin:0 6px 6px 0;}
+  .comment{display:flex;gap:9px;margin-bottom:12px;}
+  .comment-body{background:var(--surface-2);border-radius:9px;padding:8px 11px;flex:1;}
+  .comment-head{display:flex;justify-content:space-between;font-size:11.5px;font-weight:700;margin-bottom:2px;}
+  .comment-time{font-weight:400;color:var(--muted);}
+  .mention{color:var(--accent);font-weight:700;}
+  .history-row{display:flex;gap:8px;font-size:11.7px;padding:5px 0;border-bottom:1px dashed var(--border);}
+  .history-row:last-child{border:none;}
+  .sla-badge{display:inline-flex;align-items:center;gap:5px;font-size:11.3px;font-weight:700;padding:3px 8px;border-radius:20px;}
+  .close-x{cursor:pointer;color:var(--muted);width:20px;height:20px;}
+  .close-x:hover{color:var(--ink);}
+
+  .empty{text-align:center;padding:40px 20px;color:var(--muted);font-size:12.5px;}
+  .toast-wrap{position:fixed;bottom:20px;right:20px;z-index:300;display:flex;flex-direction:column;gap:8px;max-width:92vw;}
+  .toast{background:var(--ink);color:var(--paper);padding:10px 15px;border-radius:8px;font-size:12.5px;box-shadow:var(--shadow);animation:toastin .18s ease;}
+  @keyframes toastin{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+
+  /* login */
+  #login-view{min-height:100vh;display:flex;align-items:center;justify-content:center;background:
+    radial-gradient(circle at 15% 10%, var(--accent-soft), transparent 45%), var(--paper);padding:20px;}
+  .login-card{width:400px;max-width:100%;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:30px 28px;box-shadow:var(--shadow);}
+  .login-brand{display:flex;align-items:center;gap:10px;margin-bottom:22px;}
+  .demo-account{display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:9px;background:var(--surface);cursor:pointer;margin-bottom:8px;text-align:left;color:var(--ink);}
+  .demo-account:hover{border-color:var(--accent);background:var(--accent-soft);}
+  .demo-account .role{margin-left:auto;font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;}
+  .divider{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:11px;margin:18px 0;text-transform:uppercase;letter-spacing:.05em;}
+  .divider::before,.divider::after{content:"";flex:1;height:1px;background:var(--border);}
+
+  .progress-track{height:6px;background:var(--surface-2);border-radius:20px;overflow:hidden;}
+  .progress-fill{height:100%;background:var(--accent);border-radius:20px;}
+  .fieldnote{font-size:11px;color:var(--muted);margin-top:4px;}
+
+  /* ---------- Mobile ---------- */
+  @media (max-width:900px){
+    #sidebar{
+      position:fixed; top:0; left:0; height:100vh; z-index:85;
+      transform:translateX(-100%); transition:transform .22s ease; box-shadow:var(--shadow);
+    }
+    #sidebar.mobile-open{transform:translateX(0);}
+    .navcollapse{display:none;}
+    .mobile-menu-btn{display:flex;}
+    .search-wrap{display:none;}
+    .roleswitch-label{display:none;}
+    #topbar{padding:0 12px;gap:8px;}
+    .viewtitle{font-size:15px;max-width:130px;overflow:hidden;text-overflow:ellipsis;}
+    #view-root{padding:14px 14px 50px;}
+    .meta-grid{grid-template-columns:1fr;}
+    .form-2col{grid-template-columns:1fr;}
+    .cal-cell{min-height:64px;padding:4px;font-size:9.6px;}
+    .cal-daynum{font-size:10px;margin-bottom:2px;}
+    .cal-chip{padding:1px 4px;margin-bottom:2px;}
+    .slideover{width:100%;}
+    .kpi-value{font-size:24px;}
+  }
+  @media (max-width:520px){
+    .grid-kpi{grid-template-columns:repeat(2,1fr)!important;}
+    .btn-text-hide{display:none;}
+    .roleswitch{display:none;}
+    .view-head h2{font-size:19px;}
+  }
+</style>
+</head>
+<body>
+
+<div id="login-view">
+  <div class="login-card">
+    <div class="login-brand">
+      <div class="brand-mark">L</div>
+      <div>
+        <div class="brand-text">LSBA Dashboard</div>
+        <div class="brand-sub">Task &amp; Content Operations</div>
+      </div>
+    </div>
+    <div class="form-row"><label>Email</label><input type="text" class="field-input" placeholder="you@company.com" style="width:100%"></div>
+    <div class="form-row"><label>Password</label><input type="text" class="field-input" placeholder="••••••••" style="width:100%"></div>
+    <button class="btn primary" style="width:100%;justify-content:center;margin-bottom:4px" disabled>Sign in</button>
+    <div class="fieldnote">This is a demo — real sign-in is disabled. Use a quick account below.</div>
+    <div class="divider">Quick demo sign-in</div>
+    <button class="demo-account" onclick="loginAs('u1')"><div class="avatar" style="background:var(--cat-1)">AG</div><div><div style="font-weight:700">Aabhas Gugnani</div><div class="fieldnote" style="margin:0">Full org control</div></div><span class="role">Super Admin</span></button>
+    <button class="demo-account" onclick="loginAs('u2')"><div class="avatar" style="background:var(--cat-3)">RI</div><div><div style="font-weight:700">Rishabh</div><div class="fieldnote" style="margin:0">Marketing lead</div></div><span class="role">Admin</span></button>
+    <button class="demo-account" onclick="loginAs('u3')"><div class="avatar" style="background:var(--cat-2)">ST</div><div><div style="font-weight:700">Stuti</div><div class="fieldnote" style="margin:0">Content writer</div></div><span class="role">User</span></button>
+    <div class="fieldnote" style="text-align:center;margin-top:16px" id="version-badge-login"></div>
+  </div>
+</div>
+
+<div id="app" class="hidden">
+  <div class="sidebar-backdrop hidden" id="sidebar-backdrop" onclick="closeMobileSidebar()"></div>
+  <div id="sidebar">
+    <div class="brand">
+      <div class="brand-mark">L</div>
+      <div><div class="brand-text">LSBA</div><div class="brand-sub">Dashboard &middot; <span id="version-badge-sidebar"></span></div></div>
+    </div>
+    <div id="nav-container"></div>
+    <div class="navcollapse"><button class="iconbtn" onclick="toggleSidebar()" title="Collapse">&lang;&rang;</button></div>
+  </div>
+
+  <div id="main">
+    <div id="topbar">
+      <button class="iconbtn mobile-menu-btn" onclick="toggleMobileSidebar()" title="Menu">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </button>
+      <div class="viewtitle" id="view-title">Dashboard</div>
+      <div class="search-wrap">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        <input type="text" id="global-search" placeholder="Search tasks, people, tags…" oninput="onGlobalSearch(this.value)">
+      </div>
+      <div class="top-spacer"></div>
+      <button class="btn primary" onclick="openTaskModal()">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14M5 12h14"/></svg>
+        <span class="btn-text-hide">New Task</span>
+      </button>
+      <div class="roleswitch">
+        <span class="roleswitch-label">Viewing as</span>
+        <select id="role-select" onchange="switchUser(this.value)"></select>
+      </div>
+      <div style="position:relative">
+        <button class="iconbell" onclick="toggleNotif()" title="Notifications">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg>
+          <span class="dot" id="notif-dot" style="display:none"></span>
+        </button>
+        <div class="dropdown hidden" id="notif-panel">
+          <div class="dropdown-head"><span>Notifications</span><button class="subtle-btn" onclick="markAllRead()">Mark all read</button></div>
+          <div class="dropdown-body" id="notif-list"></div>
+        </div>
+      </div>
+      <div class="avatar" id="current-avatar"></div>
+    </div>
+    <div id="view-root"></div>
+  </div>
+</div>
+
+<div class="chart-tooltip" id="chart-tooltip"></div>
+<div class="toast-wrap" id="toast-wrap"></div>
+
+<div class="overlay hidden" id="task-overlay"><div class="slideover" id="task-slideover"></div></div>
+<div class="overlay center hidden" id="modal-overlay"><div class="modal" id="modal-root"></div></div>
+
+<script>
+/* ================= APP VERSION ================= */
+const APP_VERSION = '1.2.0';
+
+/* ================= STATE / SEED ================= */
+const LS_KEY = 'lsba_dashboard_state_v2';
+const ICONS = {
+  dashboard:'<path d="M4 4h7v9H4zM13 4h7v5h-7zM13 12h7v8h-7zM4 16h7v4H4z"/>',
+  tasks:'<path d="M4 6h16M4 12h16M4 18h10"/><circle cx="4" cy="6" r="0"/>',
+  kanban:'<path d="M4 4h4v16H4zM10 4h4v10h-4zM16 4h4v13h-4z"/>',
+  calendar:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
+  reports:'<path d="M4 20V10M10 20V4M16 20v-7M4 20h16"/>',
+  activity:'<path d="M3 12h4l2 8 4-16 2 8h6"/>',
+  team:'<circle cx="9" cy="8" r="3"/><path d="M2 20c0-3.3 3.1-6 7-6s7 2.7 7 6"/><circle cx="18" cy="9" r="2.4"/><path d="M15.5 14.3c2.8.4 5 2.5 5 5.2"/>',
+  settings:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.34 1.87l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.7 1.7 0 00-1.87-.34 1.7 1.7 0 00-1 1.55V21a2 2 0 01-4 0v-.09a1.7 1.7 0 00-1-1.55 1.7 1.7 0 00-1.87.34l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.7 1.7 0 004.6 15a1.7 1.7 0 00-1.55-1H3a2 2 0 010-4h.09A1.7 1.7 0 004.6 9a1.7 1.7 0 00-.34-1.87l-.06-.06a2 2 0 112.83-2.83l.06.06A1.7 1.7 0 009 4.6a1.7 1.7 0 001-1.55V3a2 2 0 014 0v.09a1.7 1.7 0 001 1.55 1.7 1.7 0 001.87-.34l.06-.06a2 2 0 112.83 2.83l-.06.06A1.7 1.7 0 0019.4 9c.14.36.5 1 1.55 1H21a2 2 0 010 4h-.09a1.7 1.7 0 00-1.51 1z"/>',
+};
+const DEPARTMENTS = ['Content','Design','Social Media','SEO','Email Marketing','Operations','PR'];
+const CATEGORIES = ['Newsletter','Social Post','Blog Article','Campaign Report','Banner Design','SEO Audit','Press Release','Client Deliverable'];
+const CAT_COLORS = ['cat-1','cat-2','cat-3','cat-4','cat-5','cat-6'];
+
+function uid(p){ return p + '_' + Math.random().toString(36).slice(2,9); }
+function initials(name){ const parts = name.trim().split(/\s+/); return parts.length>1 ? (parts[0][0]+parts[1][0]).toUpperCase() : parts[0].slice(0,2).toUpperCase(); }
+function fmtDate(d){ const dt = new Date(d); return dt.toLocaleDateString(undefined,{month:'short',day:'numeric'}); }
+function fmtDateFull(d){ const dt = new Date(d); return dt.toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'}); }
+function fmtDateTime(d){ const dt = new Date(d); return dt.toLocaleDateString(undefined,{month:'short',day:'numeric'}) + ' · ' + dt.toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit'}); }
+function isoDate(d){ return new Date(d).toISOString().slice(0,10); }
+function addDays(d,n){ const dt = new Date(d); dt.setDate(dt.getDate()+n); return dt; }
+function daysBetween(a,b){ return Math.round((new Date(b) - new Date(a)) / 86400000); }
+function timeAgo(ts){
+  const s = Math.round((Date.now()-new Date(ts).getTime())/1000);
+  if(s<60) return 'just now';
+  if(s<3600) return Math.floor(s/60)+'m ago';
+  if(s<86400) return Math.floor(s/3600)+'h ago';
+  return Math.floor(s/86400)+'d ago';
+}
+function userColor(u){ const idx = STATE.users.findIndex(x=>x.id===u.id) % 6; return `var(--cat-${idx+1})`; }
+function userById(id){ return STATE.users.find(u=>u.id===id); }
+function taskById(id){ return STATE.tasks.find(t=>t.id===id); }
+
+function seedState(){
+  const today = new Date();
+  const users = [
+    {id:'u1', name:'Aabhas Gugnani', email:'aabhas.gugnani@gmail.com', role:'super_admin', department:'Leadership', active:true},
+    {id:'u2', name:'Rishabh', email:'rishabh@lsba.co', role:'admin', department:'Marketing', active:true},
+    {id:'u3', name:'Stuti', email:'stuti@lsba.co', role:'user', department:'Content', active:true},
+    {id:'u4', name:'Mahak', email:'mahak@lsba.co', role:'user', department:'Design', active:true},
+    {id:'u5', name:'Saanvi', email:'saanvi@lsba.co', role:'user', department:'Social Media', active:true},
+    {id:'u6', name:'Rahul', email:'rahul@lsba.co', role:'admin', department:'Operations', active:true},
+    {id:'u7', name:'Aakriti', email:'aakriti@lsba.co', role:'admin', department:'SEO', active:true},
+  ];
+
+  function mk(t){
+    return Object.assign({
+      id: uid('t'),
+      description:'', tags:[], labels:[], checklist:[], attachments:[], proofLinks:[],
+      comments:[], history:[{ts:new Date(t.createdOffset!==undefined?addDays(today,t.createdOffset):today).toISOString(), userId:t.assignedBy||'u2', action:'Task Created', detail:t.title}],
+      recurrence:null, slaHours: t.priority==='High'?24:t.priority==='Medium'?48:72,
+      submittedAt:null, approvedAt:null, approvedBy:null, approvalNotes:'', rejectionNotes:'',
+      createdDate: isoDate(t.createdOffset!==undefined?addDays(today,t.createdOffset):today),
+      updatedDate: isoDate(today),
+      estHours: t.estHours || 3,
+    }, t, {dueDate: isoDate(addDays(today, t.dueOffset))});
+  }
+
+  const tasks = [
+    mk({title:'Publish weekly newsletter — Product Update', category:'Newsletter', department:'Content', priority:'High', assignedTo:'u3', assignedBy:'u2', dueOffset:0, status:'In Progress', createdOffset:-3, tags:['newsletter','q3'], checklist:[{id:uid('c'),text:'Draft copy',done:true},{id:uid('c'),text:'Design header banner',done:true},{id:uid('c'),text:'QA links',done:false},{id:uid('c'),text:'Schedule send',done:false}], recurrence:{freq:'weekly',interval:1,startDate:isoDate(addDays(today,-30)),endDate:'',skipHolidays:true,autoAssign:true}}),
+    mk({title:'Design Instagram carousel — Summer Sale', category:'Social Post', department:'Design', priority:'High', assignedTo:'u4', assignedBy:'u2', dueOffset:0, status:'Submitted', createdOffset:-2, tags:['instagram','sale'], proofLinks:[{type:'Instagram',url:'https://instagram.com/p/demo-summer-sale'}], comments:[{id:uid('cm'),userId:'u4',text:'@Rishabh ready for review, added alt text on all 5 slides.',ts:addDays(today,0).toISOString()}], submittedAt:addDays(today,0).toISOString()}),
+    mk({title:'Write blog article — 10 Content Trends for 2026', category:'Blog Article', department:'Content', priority:'Medium', assignedTo:'u3', assignedBy:'u2', dueOffset:1, status:'Pending', createdOffset:-1, tags:['seo','blog']}),
+    mk({title:'Send Q2 campaign performance report', category:'Campaign Report', department:'Marketing', priority:'High', assignedTo:'u2', assignedBy:'u1', dueOffset:-2, status:'Pending', createdOffset:-6, tags:['report','client']}),
+    mk({title:'Design banner — Homepage hero refresh', category:'Banner Design', department:'Design', priority:'Medium', assignedTo:'u4', assignedBy:'u2', dueOffset:-1, status:'Rejected', createdOffset:-5, rejectionNotes:'Logo lockup is off-brand — please use the 2026 wordmark and resubmit.', comments:[{id:uid('cm'),userId:'u2',text:'Great composition, just swap the logo lockup per brand guide v3.',ts:addDays(today,-1).toISOString()}]}),
+    mk({title:'LinkedIn thought-leadership post — CEO', category:'Social Post', department:'Social Media', priority:'Medium', assignedTo:'u5', assignedBy:'u6', dueOffset:2, status:'Pending', createdOffset:0}),
+    mk({title:'SEO audit — client site lsba-client-04.com', category:'SEO Audit', department:'SEO', priority:'Low', assignedTo:'u3', assignedBy:'u7', dueOffset:5, status:'In Progress', createdOffset:-4}),
+    mk({title:'Press release — Series B announcement', category:'Press Release', department:'PR', priority:'High', assignedTo:'u3', assignedBy:'u1', dueOffset:3, status:'In Progress', createdOffset:-2, checklist:[{id:uid('c'),text:'Legal review',done:false},{id:uid('c'),text:'Exec quotes',done:true}]}),
+    mk({title:'Twitter/X thread — feature launch recap', category:'Social Post', department:'Social Media', priority:'Low', assignedTo:'u5', assignedBy:'u6', dueOffset:0, status:'Approved', createdOffset:-3, submittedAt:addDays(today,-1).toISOString(), approvedAt:addDays(today,-0).toISOString(), approvedBy:'u6', proofLinks:[{type:'Twitter/X',url:'https://x.com/demo/status/000'}]}),
+    mk({title:'Monthly client deliverable — Acme Corp package', category:'Client Deliverable', department:'Operations', priority:'High', assignedTo:'u6', assignedBy:'u1', dueOffset:-3, status:'Completed', createdOffset:-33, submittedAt:addDays(today,-4).toISOString(), approvedAt:addDays(today,-3).toISOString(), approvedBy:'u1'}),
+    mk({title:'Facebook post — customer testimonial', category:'Social Post', department:'Social Media', priority:'Low', assignedTo:'u5', assignedBy:'u6', dueOffset:0, status:'Pending', createdOffset:0, recurrence:{freq:'daily',interval:1,startDate:isoDate(addDays(today,-14)),endDate:'',skipHolidays:false,autoAssign:true}}),
+    mk({title:'YouTube — product walkthrough video edit', category:'Client Deliverable', department:'Design', priority:'Medium', assignedTo:'u4', assignedBy:'u2', dueOffset:4, status:'Pending', createdOffset:-1}),
+    mk({title:'Email drip — onboarding sequence copy', category:'Newsletter', department:'Content', priority:'Medium', assignedTo:'u3', assignedBy:'u2', dueOffset:-1, status:'Submitted', createdOffset:-3, submittedAt:addDays(today,-1).toISOString(), proofLinks:[{type:'Google Drive',url:'https://drive.google.com/demo-onboarding-copy'}]}),
+    mk({title:'Quarterly SEO report — client bundle', category:'Campaign Report', department:'SEO', priority:'Medium', assignedTo:'u5', assignedBy:'u7', dueOffset:6, status:'Pending', createdOffset:0, recurrence:{freq:'quarterly',interval:1,startDate:isoDate(addDays(today,-90)),endDate:'',skipHolidays:false,autoAssign:true}}),
+    mk({title:'Design banner — festive campaign teaser', category:'Banner Design', department:'Design', priority:'High', assignedTo:'u4', assignedBy:'u2', dueOffset:1, status:'In Progress', createdOffset:-1}),
+    mk({title:'Instagram Reels — behind the scenes', category:'Social Post', department:'Social Media', priority:'Low', assignedTo:'u5', assignedBy:'u6', dueOffset:-4, status:'Completed', createdOffset:-10, submittedAt:addDays(today,-5).toISOString(), approvedAt:addDays(today,-4).toISOString(), approvedBy:'u6'}),
+    mk({title:'Blog article — case study: Acme growth', category:'Blog Article', department:'Content', priority:'Medium', assignedTo:'u3', assignedBy:'u2', dueOffset:-5, status:'Completed', createdOffset:-15, submittedAt:addDays(today,-6).toISOString(), approvedAt:addDays(today,-5).toISOString(), approvedBy:'u2'}),
+    mk({title:'Press kit refresh — brand assets', category:'Client Deliverable', department:'Design', priority:'Low', assignedTo:'u4', assignedBy:'u1', dueOffset:8, status:'Pending', createdOffset:0}),
+  ];
+
+  const notifications = [
+    {id:uid('n'), userId:'u2', type:'submitted', text:'Mahak submitted "Design Instagram carousel — Summer Sale" for approval.', taskId: tasks[1].id, ts:addDays(today,0).toISOString(), read:false},
+    {id:uid('n'), userId:'u4', type:'rejected', text:'Your task "Design banner — Homepage hero refresh" needs revisions.', taskId: tasks[4].id, ts:addDays(today,-1).toISOString(), read:false},
+    {id:uid('n'), userId:'u3', type:'due', text:'"Write blog article — 10 Content Trends for 2026" is due tomorrow.', taskId: tasks[2].id, ts:addDays(today,0).toISOString(), read:true},
+    {id:uid('n'), userId:'u2', type:'sla', text:'Approval SLA nearing expiry for "Email drip — onboarding sequence copy".', taskId: tasks[12].id, ts:addDays(today,0).toISOString(), read:false},
+    {id:uid('n'), userId:'u5', type:'approved', text:'Your task "Twitter/X thread — feature launch recap" was approved.', taskId: tasks[8].id, ts:addDays(today,0).toISOString(), read:true},
+    {id:uid('n'), userId:'u1', type:'overdue', text:'"Send Q2 campaign performance report" is overdue by 2 days.', taskId: tasks[3].id, ts:addDays(today,0).toISOString(), read:false},
+  ];
+
+  return {
+    currentUserId:'u1', users, tasks, notifications,
+    holidays:[isoDate(addDays(today,10))],
+    slaDefaults:{High:24,Medium:48,Low:72},
+    seededAt: today.toISOString(),
+  };
+}
+
+let STATE = loadState();
+function loadState(){
+  try{
+    const raw = localStorage.getItem(LS_KEY);
+    if(raw) return JSON.parse(raw);
+  }catch(e){}
+  const s = seedState();
+  localStorage.setItem(LS_KEY, JSON.stringify(s));
+  return s;
+}
+function saveState(){ localStorage.setItem(LS_KEY, JSON.stringify(STATE)); }
+function resetDemo(){
+  if(!confirm('Reset all demo data? This clears every change you made in this browser.')) return;
+  localStorage.removeItem(LS_KEY);
+  STATE = loadState();
+  route();
+  toast('Demo data reset');
+}
+
+/* ================= AUTH / ROLES ================= */
+function currentUser(){ return userById(STATE.currentUserId); }
+function isSuper(){ return currentUser().role==='super_admin'; }
+function isAdmin(){ return currentUser().role==='admin' || isSuper(); }
+
+function loginAs(uid_){
+  STATE.currentUserId = uid_; saveState();
+  document.getElementById('login-view').classList.add('hidden');
+  document.getElementById('app').classList.remove('hidden');
+  buildRoleSelect(); buildNav();
+  location.hash = '#/dashboard';
+  route();
+}
+function switchUser(id){ STATE.currentUserId = id; saveState(); buildNav(); renderTopUser(); route(); }
+function logout(){ document.getElementById('app').classList.add('hidden'); document.getElementById('login-view').classList.remove('hidden'); }
+
+function buildRoleSelect(){
+  const sel = document.getElementById('role-select');
+  sel.innerHTML = STATE.users.filter(u=>u.active).map(u=>`<option value="${u.id}" ${u.id===STATE.currentUserId?'selected':''}>${u.name} — ${roleLabel(u.role)}</option>`).join('');
+}
+function roleLabel(r){ return r==='super_admin'?'Super Admin':r==='admin'?'Admin':'User'; }
+
+/* ================= NAV / ROUTER ================= */
+const NAV_ITEMS = [
+  {id:'dashboard', label:'Dashboard', icon:'dashboard', roles:['user','admin','super_admin']},
+  {id:'tasks', label:'Tasks', icon:'tasks', roles:['user','admin','super_admin']},
+  {id:'kanban', label:'Kanban Board', icon:'kanban', roles:['user','admin','super_admin']},
+  {id:'calendar', label:'Calendar', icon:'calendar', roles:['user','admin','super_admin']},
+  {id:'reports', label:'Reports', icon:'reports', roles:['admin','super_admin']},
+  {id:'activity', label:'Activity Log', icon:'activity', roles:['admin','super_admin']},
+  {id:'team', label:'Team & Users', icon:'team', roles:['admin','super_admin']},
+  {id:'settings', label:'Settings', icon:'settings', roles:['super_admin']},
+];
+function buildNav(){
+  const role = currentUser().role;
+  const html = NAV_ITEMS.filter(n=>n.roles.includes(role)).map(n=>{
+    const badge = n.id==='tasks' ? myOpenTaskCount() : (n.id==='reports' && isAdmin() ? pendingApprovalCount() : 0);
+    return `<div class="navitem" data-route="${n.id}" onclick="location.hash='#/${n.id}'">
+      <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">${ICONS[n.icon]}</svg>
+      <span class="navlabel">${n.label}</span>
+      ${badge?`<span class="badge">${badge}</span>`:''}
+    </div>`;
+  }).join('') + `<div class="navsection">Session</div>
+    <div class="navitem" onclick="resetDemo()"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M3 12a9 9 0 109-9 9.7 9.7 0 00-7 3L3 8"/><path d="M3 3v5h5"/></svg><span class="navlabel">Reset Demo Data</span></div>
+    <div class="navitem" onclick="logout()"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg><span class="navlabel">Log out</span></div>`;
+  document.getElementById('nav-container').innerHTML = html;
+}
+function toggleSidebar(){ document.getElementById('sidebar').classList.toggle('collapsed'); }
+function toggleMobileSidebar(){
+  document.getElementById('sidebar').classList.toggle('mobile-open');
+  document.getElementById('sidebar-backdrop').classList.toggle('hidden');
+}
+function closeMobileSidebar(){
+  document.getElementById('sidebar').classList.remove('mobile-open');
+  document.getElementById('sidebar-backdrop').classList.add('hidden');
+}
+
+function myOpenTaskCount(){
+  const uid_ = STATE.currentUserId;
+  return STATE.tasks.filter(t=>t.assignedTo===uid_ && !['Completed','Approved'].includes(t.status)).length;
+}
+function pendingApprovalCount(){ return STATE.tasks.filter(t=>t.status==='Submitted').length; }
+
+function route(){
+  const hash = location.hash.replace('#/','') || 'dashboard';
+  document.querySelectorAll('.navitem[data-route]').forEach(el=>el.classList.toggle('active', el.dataset.route===hash));
+  const titles = {dashboard:'Dashboard', tasks:'Tasks', kanban:'Kanban Board', calendar:'Calendar', reports:'Reports & Analytics', activity:'Activity Log', team:'Team & Users', settings:'Settings'};
+  document.getElementById('view-title').textContent = titles[hash] || 'Dashboard';
+  const renderers = {dashboard:renderDashboard, tasks:renderTasks, kanban:renderKanban, calendar:renderCalendar, reports:renderReports, activity:renderActivityView, team:renderTeam, settings:renderSettings};
+  buildNav();
+  (renderers[hash] || renderDashboard)();
+  renderTopUser();
+  closeMobileSidebar();
+}
+window.addEventListener('hashchange', route);
+
+function renderTopUser(){
+  const u = currentUser();
+  const av = document.getElementById('current-avatar');
+  av.textContent = initials(u.name); av.style.background = userColor(u);
+  buildRoleSelect();
+  const unread = STATE.notifications.filter(n=>n.userId===u.id && !n.read).length;
+  document.getElementById('notif-dot').style.display = unread ? 'block' : 'none';
+}
+
+/* ================= TOASTS ================= */
+function toast(msg){
+  const el = document.createElement('div'); el.className='toast'; el.textContent = msg;
+  document.getElementById('toast-wrap').appendChild(el);
+  setTimeout(()=>el.remove(), 3200);
+}
+
+/* ================= NOTIFICATIONS ================= */
+function toggleNotif(){
+  const panel = document.getElementById('notif-panel');
+  const opening = panel.classList.contains('hidden');
+  panel.classList.toggle('hidden');
+  if(opening){
+    const mine = STATE.notifications.filter(n=>n.userId===STATE.currentUserId).sort((a,b)=>new Date(b.ts)-new Date(a.ts));
+    document.getElementById('notif-list').innerHTML = mine.length ? mine.map(n=>`
+      <div class="notif-item ${n.read?'read':'unread'}" onclick="openNotif('${n.id}')">
+        <div class="notif-dot"></div>
+        <div><div class="notif-text">${n.text}</div><div class="notif-time">${timeAgo(n.ts)}</div></div>
+      </div>`).join('') : `<div class="empty">No notifications yet</div>`;
+  }
+}
+function openNotif(id){
+  const n = STATE.notifications.find(x=>x.id===id);
+  n.read = true; saveState();
+  document.getElementById('notif-panel').classList.add('hidden');
+  renderTopUser();
+  if(n.taskId && taskById(n.taskId)) openTaskDetail(n.taskId);
+}
+function markAllRead(){
+  STATE.notifications.forEach(n=>{ if(n.userId===STATE.currentUserId) n.read=true; });
+  saveState(); renderTopUser(); toggleNotif(); toggleNotif();
+}
+function notify(userId, type, text, taskId){
+  STATE.notifications.unshift({id:uid('n'), userId, type, text, taskId, ts:new Date().toISOString(), read:false});
+}
+document.addEventListener('click', (e)=>{
+  const panel = document.getElementById('notif-panel');
+  if(!panel.classList.contains('hidden') && !panel.contains(e.target) && !e.target.closest('.iconbell')) panel.classList.add('hidden');
+});
+
+/* ================= HISTORY / ACTIVITY ================= */
+function logHistory(task, action, detail){
+  task.history.push({ts:new Date().toISOString(), userId:STATE.currentUserId, action, detail:detail||''});
+  task.updatedDate = isoDate(new Date());
+}
+function allActivity(){
+  const rows = [];
+  STATE.tasks.forEach(t=> t.history.forEach(h=> rows.push({...h, taskId:t.id, taskTitle:t.title})));
+  return rows.sort((a,b)=>new Date(b.ts)-new Date(a.ts));
+}
+
+/* ================= CHART HELPERS (inline SVG, per dataviz method) ================= */
+let TOOLTIP = null;
+function ensureTooltip(){ TOOLTIP = document.getElementById('chart-tooltip'); }
+function showTip(evt, html){
+  if(!TOOLTIP) ensureTooltip();
+  TOOLTIP.innerHTML = html;
+  TOOLTIP.style.left = evt.clientX+'px'; TOOLTIP.style.top = evt.clientY+'px';
+  TOOLTIP.classList.add('show');
+}
+function hideTip(){ if(TOOLTIP) TOOLTIP.classList.remove('show'); }
+
+function barChart(data, opts){
+  opts = opts||{};
+  const w = opts.width||420, h = opts.height||190, pad = {t:10,r:10,b:26,l:opts.horizontal?90:28};
+  const max = Math.max(1, ...data.map(d=>d.value));
+  let svg = '';
+  if(opts.horizontal){
+    const innerH = h - pad.t - pad.b, bw = Math.min(20, innerH/data.length - 8);
+    const step = innerH/data.length;
+    data.forEach((d,i)=>{
+      const y = pad.t + i*step + (step-bw)/2;
+      const bwidth = (w-pad.l-pad.r) * d.value/max;
+      svg += `<text x="${pad.l-8}" y="${y+bw/2+4}" text-anchor="end" font-size="10.5" fill="var(--muted)">${d.label}</text>`;
+      svg += `<rect x="${pad.l}" y="${y}" width="${Math.max(3,bwidth)}" height="${bw}" rx="4" fill="${d.color||'var(--accent)'}" class="bar-mark" data-tip="${d.label}: ${d.value}"/>`;
+    });
+  } else {
+    const innerW = w-pad.l-pad.r, innerH = h-pad.t-pad.b;
+    const step = innerW/data.length, bw = Math.min(34, step*0.55);
+    for(let g=0; g<=3; g++){
+      const gy = pad.t + innerH - (innerH*g/3);
+      svg += `<line x1="${pad.l}" y1="${gy}" x2="${w-pad.r}" y2="${gy}" stroke="var(--border)" stroke-width="1"/>`;
+    }
+    data.forEach((d,i)=>{
+      const bh = innerH * d.value/max;
+      const x = pad.l + i*step + (step-bw)/2;
+      const y = pad.t + innerH - bh;
+      svg += `<rect x="${x}" y="${y}" width="${bw}" height="${Math.max(2,bh)}" rx="4" fill="${d.color||'var(--accent)'}" class="bar-mark" data-tip="${d.label}: ${d.value}"/>`;
+      svg += `<text x="${x+bw/2}" y="${h-8}" text-anchor="middle" font-size="10.3" fill="var(--muted)">${d.label}</text>`;
+    });
+  }
+  return `<svg viewBox="0 0 ${w} ${h}" width="100%" height="${h}" class="chartsvg" onmousemove="chartHover(event)" onmouseleave="hideTip()">${svg}</svg>`;
+}
+
+function lineAreaChart(data, opts){
+  opts = opts||{};
+  const w = opts.width||520, h = opts.height||180, pad = {t:14,r:14,b:24,l:32};
+  const max = Math.max(1, ...data.map(d=>d.value));
+  const innerW = w-pad.l-pad.r, innerH = h-pad.t-pad.b;
+  const step = data.length>1 ? innerW/(data.length-1) : 0;
+  const pts = data.map((d,i)=>[pad.l+i*step, pad.t+innerH-(innerH*d.value/max)]);
+  const line = pts.map((p,i)=>(i===0?'M':'L')+p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ');
+  const area = line + ` L${pts[pts.length-1][0]},${pad.t+innerH} L${pts[0][0]},${pad.t+innerH} Z`;
+  let grid = '';
+  for(let g=0; g<=3; g++){
+    const gy = pad.t + innerH - (innerH*g/3);
+    grid += `<line x1="${pad.l}" y1="${gy}" x2="${w-pad.r}" y2="${gy}" stroke="var(--border)" stroke-width="1"/>`;
+  }
+  const dots = pts.map((p,i)=>`<circle cx="${p[0]}" cy="${p[1]}" r="3.2" fill="var(--accent)" class="line-mark" data-tip="${data[i].label}: ${data[i].value}"/>`).join('');
+  const labels = data.map((d,i)=>`<text x="${pts[i][0]}" y="${h-6}" text-anchor="middle" font-size="10" fill="var(--muted)">${d.label}</text>`).join('');
+  return `<svg viewBox="0 0 ${w} ${h}" width="100%" height="${h}" class="chartsvg" onmousemove="chartHover(event)" onmouseleave="hideTip()">
+    ${grid}
+    <path d="${area}" fill="var(--accent-soft)"/>
+    <path d="${line}" fill="none" stroke="var(--accent)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    ${dots}${labels}
+  </svg>`;
+}
+
+function donutChart(data, opts){
+  opts = opts||{};
+  const size = opts.size||150, r = size/2-10, cx=size/2, cy=size/2, sw=16;
+  const total = data.reduce((a,d)=>a+d.value,0) || 1;
+  let angle = -90, svg='';
+  data.forEach(d=>{
+    const sweep = (d.value/total)*360;
+    const large = sweep>180?1:0;
+    const x1 = cx + r*Math.cos(angle*Math.PI/180), y1 = cy + r*Math.sin(angle*Math.PI/180);
+    const end = angle+sweep;
+    const x2 = cx + r*Math.cos(end*Math.PI/180), y2 = cy + r*Math.sin(end*Math.PI/180);
+    svg += `<path d="M${x1},${y1} A${r},${r} 0 ${large} 1 ${x2},${y2}" fill="none" stroke="${d.color}" stroke-width="${sw}" class="line-mark" data-tip="${d.label}: ${d.value}"/>`;
+    angle = end;
+  });
+  return `<svg viewBox="0 0 ${size} ${size}" width="${size}" height="${size}" class="chartsvg" onmousemove="chartHover(event)" onmouseleave="hideTip()">${svg}
+    <text x="${cx}" y="${cy-2}" text-anchor="middle" font-size="18" font-weight="700" fill="var(--ink)" font-family="var(--font-display)">${total}</text>
+    <text x="${cx}" y="${cy+14}" text-anchor="middle" font-size="9.5" fill="var(--muted)">total</text>
+  </svg>`;
+}
+
+function sparkline(values, opts){
+  opts = opts||{};
+  const w=opts.width||90, h=opts.height||28;
+  const max = Math.max(...values,1), min = Math.min(...values,0);
+  const range = (max-min)||1;
+  const step = w/(values.length-1);
+  const pts = values.map((v,i)=>[i*step, h-((v-min)/range)*h]);
+  const line = pts.map((p,i)=>(i===0?'M':'L')+p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ');
+  return `<svg viewBox="0 0 ${w} ${h}" width="${w}" height="${h}"><path d="${line}" fill="none" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="${pts[pts.length-1][0]}" cy="${pts[pts.length-1][1]}" r="2.4" fill="var(--accent)"/></svg>`;
+}
+
+function chartHover(evt){
+  const t = evt.target.closest('[data-tip]');
+  if(t) showTip(evt, t.getAttribute('data-tip')); else hideTip();
+}
+function legendRow(items){
+  return `<div class="legend">${items.map(i=>`<div class="legend-item"><span class="legend-swatch" style="background:${i.color}"></span>${i.label}</div>`).join('')}</div>`;
+}
+
+/* ================= RECURRENCE ENGINE ================= */
+function nextDueDate(fromDate, rec){
+  let d = new Date(fromDate);
+  const step = rec.interval||1;
+  if(rec.freq==='daily') d = addDays(d, step);
+  else if(rec.freq==='weekly') d = addDays(d, 7*step);
+  else if(rec.freq==='monthly') d.setMonth(d.getMonth()+step);
+  else if(rec.freq==='quarterly') d.setMonth(d.getMonth()+3*step);
+  else if(rec.freq==='yearly') d.setFullYear(d.getFullYear()+step);
+  else if(rec.freq==='custom') d = addDays(d, (rec.customDays||7));
+  if(rec.skipHolidays){
+    while(isWeekendOrHoliday(d)) d = addDays(d,1);
+  }
+  return d;
+}
+function isWeekendOrHoliday(d){
+  const day = new Date(d).getDay();
+  const iso = isoDate(d);
+  return day===0 || day===6 || STATE.holidays.includes(iso);
+}
+function maybeSpawnRecurring(task){
+  if(!task.recurrence) return;
+  const rec = task.recurrence;
+  const next = nextDueDate(task.dueDate, rec);
+  if(rec.endDate && new Date(next) > new Date(rec.endDate)) return;
+  const clone = JSON.parse(JSON.stringify(task));
+  clone.id = uid('t');
+  clone.status = 'Pending';
+  clone.dueDate = isoDate(next);
+  clone.createdDate = isoDate(new Date());
+  clone.updatedDate = clone.createdDate;
+  clone.submittedAt=null; clone.approvedAt=null; clone.approvedBy=null; clone.approvalNotes=''; clone.rejectionNotes='';
+  clone.comments = []; clone.proofLinks = []; clone.attachments = [];
+  clone.checklist = clone.checklist.map(c=>({...c, done:false}));
+  clone.history = [{ts:new Date().toISOString(), userId:STATE.currentUserId, action:'Recurring Task Created', detail:'Auto-generated from completed occurrence'}];
+  STATE.tasks.push(clone);
+  notify(clone.assignedTo, 'recurring', `New recurring task assigned: "${clone.title}" (due ${fmtDate(clone.dueDate)}).`, clone.id);
+  toast('Next recurring occurrence created: due ' + fmtDate(clone.dueDate));
+}
+
+/* ================= TASK MUTATIONS ================= */
+function setStatus(task, status, extra){
+  const prev = task.status;
+  task.status = status;
+  Object.assign(task, extra||{});
+  logHistory(task, 'Status Changed', `${prev} → ${status}`);
+  if(status==='Completed' && prev!=='Completed'){ maybeSpawnRecurring(task); }
+  saveState();
+}
+function submitForApproval(taskId, comment, links){
+  const t = taskById(taskId);
+  t.comments.push({id:uid('cm'), userId:STATE.currentUserId, text:comment, ts:new Date().toISOString()});
+  t.proofLinks.push(...links);
+  setStatus(t, 'Submitted', {submittedAt:new Date().toISOString()});
+  notify(t.assignedBy, 'submitted', `${currentUser().name} submitted "${t.title}" for approval.`, t.id);
+  toast('Submitted for approval');
+}
+function approveTask(taskId, notes){
+  const t = taskById(taskId);
+  setStatus(t, 'Approved', {approvedAt:new Date().toISOString(), approvedBy:STATE.currentUserId, approvalNotes:notes||''});
+  notify(t.assignedTo, 'approved', `Your task "${t.title}" was approved.`, t.id);
+  setTimeout(()=>{ setStatus(t,'Completed'); saveState(); }, 10);
+  toast('Task approved');
+}
+function rejectTask(taskId, notes){
+  const t = taskById(taskId);
+  setStatus(t, 'Rejected', {rejectionNotes:notes});
+  notify(t.assignedTo, 'rejected', `Your task "${t.title}" needs revisions.`, t.id);
+  toast('Sent back for revisions');
+}
+function addComment(taskId, text){
+  const t = taskById(taskId);
+  t.comments.push({id:uid('cm'), userId:STATE.currentUserId, text, ts:new Date().toISOString()});
+  logHistory(t,'Comment Added', text.slice(0,60));
+  const mention = text.match(/@([A-Za-z ]+)/);
+  if(mention){
+    const u = STATE.users.find(u=>u.name.toLowerCase().startsWith(mention[1].trim().toLowerCase()));
+    if(u) notify(u.id,'mention', `${currentUser().name} mentioned you on "${t.title}".`, t.id);
+  }
+  saveState();
+}
+function toggleChecklist(taskId, itemId){
+  const t = taskById(taskId); const item = t.checklist.find(c=>c.id===itemId);
+  item.done = !item.done; logHistory(t,'Checklist Updated', item.text); saveState();
+}
+function deleteTask(taskId){
+  if(!confirm('Delete this task? It will be removed from all views.')) return;
+  STATE.tasks = STATE.tasks.filter(t=>t.id!==taskId);
+  saveState(); closeSlideover(); route(); toast('Task deleted');
+}
+function duplicateTask(taskId){
+  const t = taskById(taskId);
+  const clone = JSON.parse(JSON.stringify(t));
+  clone.id = uid('t'); clone.title = t.title + ' (copy)'; clone.status='Pending';
+  clone.createdDate = isoDate(new Date()); clone.comments=[]; clone.history=[{ts:new Date().toISOString(),userId:STATE.currentUserId,action:'Task Created',detail:'Duplicated from '+t.title}];
+  STATE.tasks.push(clone); saveState(); route(); toast('Task duplicated');
+}
+
+/* ================= FILTER STATE ================= */
+let FILTERS = {q:'', status:'', priority:'', category:'', assignee:'', dept:''};
+let SELECTED_TASKS = new Set();
+
+function visibleTasks(){
+  const role = currentUser().role;
+  let list = STATE.tasks;
+  if(role==='user') list = list.filter(t=>t.assignedTo===STATE.currentUserId);
+  if(FILTERS.q){
+    const q = FILTERS.q.toLowerCase();
+    list = list.filter(t=> t.title.toLowerCase().includes(q) || t.tags.join(' ').toLowerCase().includes(q) || userById(t.assignedTo).name.toLowerCase().includes(q) || t.category.toLowerCase().includes(q));
+  }
+  if(FILTERS.status) list = list.filter(t=>t.status===FILTERS.status);
+  if(FILTERS.priority) list = list.filter(t=>t.priority===FILTERS.priority);
+  if(FILTERS.category) list = list.filter(t=>t.category===FILTERS.category);
+  if(FILTERS.assignee) list = list.filter(t=>t.assignedTo===FILTERS.assignee);
+  if(FILTERS.dept) list = list.filter(t=>t.department===FILTERS.dept);
+  return list;
+}
+function onGlobalSearch(v){ FILTERS.q = v; const hash = location.hash.replace('#/','')||'dashboard'; if(hash==='tasks') renderTasks(); }
+
+/* ================= DASHBOARD ================= */
+function renderDashboard(){
+  const root = document.getElementById('view-root');
+  if(currentUser().role==='user'){ root.innerHTML = userDashboardHTML(); attachChartHovers(); return; }
+  root.innerHTML = adminDashboardHTML(); attachChartHovers();
+}
+
+function computeKPIs(){
+  const tasks = STATE.tasks;
+  const today = isoDate(new Date());
+  const total = tasks.length;
+  const byStatus = s => tasks.filter(t=>t.status===s).length;
+  const overdue = tasks.filter(t=> new Date(t.dueDate) < new Date(today) && !['Completed','Approved'].includes(t.status)).length;
+  const recurring = tasks.filter(t=>t.recurrence).length;
+  const completed = byStatus('Completed');
+  const rate = total ? Math.round((completed/total)*100) : 0;
+  const approvedTasks = tasks.filter(t=>t.approvedAt && t.submittedAt);
+  const avgApproval = approvedTasks.length ? Math.round(approvedTasks.reduce((a,t)=>a+Math.max(0,daysBetween(t.submittedAt,t.approvedAt)*24 + 6),0)/approvedTasks.length) : 0;
+  const avgCompletion = completed ? Math.round(tasks.filter(t=>t.status==='Completed').reduce((a,t)=>a+Math.max(1,daysBetween(t.createdDate,t.updatedDate)),0)/completed) : 0;
+  const dueThisWeek = tasks.filter(t=> daysBetween(today,t.dueDate)>=0 && daysBetween(today,t.dueDate)<=7 && !['Completed'].includes(t.status)).length;
+  const pendingApproval = byStatus('Submitted');
+  const overduePct = total ? Math.round((overdue/total)*100) : 0;
+  const slaOk = approvedTasks.filter(t=>t.submittedAt && (new Date(t.approvedAt)-new Date(t.submittedAt))/3600000 <= (t.slaHours||48)).length;
+  const slaPerf = approvedTasks.length ? Math.round((slaOk/approvedTasks.length)*100) : 100;
+  return {total, byStatus, overdue, recurring, completed, rate, avgApproval, avgCompletion, dueThisWeek, pendingApproval, overduePct, slaPerf};
+}
+
+function kpiCard(label, value, sub, spark){
+  return `<div class="card kpi-card">
+    <div class="kpi-top"><span class="kpi-label">${label}</span></div>
+    <div class="kpi-value num">${value}</div>
+    <div class="card-sub">${sub||''}</div>
+    ${spark?`<div class="kpi-spark">${sparkline(spark)}</div>`:''}
+  </div>`;
+}
+
+function adminDashboardHTML(){
+  const k = computeKPIs();
+  const tasks = STATE.tasks;
+  const statusOrder = ['Pending','In Progress','Submitted','Approved','Rejected','Completed'];
+  const statusColors = {'Pending':'var(--muted)','In Progress':'var(--info)','Submitted':'var(--warn)','Approved':'var(--good)','Rejected':'var(--crit)','Completed':'var(--accent)'};
+  const byStatusData = statusOrder.map(s=>({label:s.replace('In Progress','In Prog.').replace('Submitted','Subm.'), value:tasks.filter(t=>t.status===s).length, color:statusColors[s]}));
+
+  const byUser = STATE.users.filter(u=>u.role!=='super_admin' || tasks.some(t=>t.assignedTo===u.id)).map((u,i)=>({label:u.name.split(' ')[0], value:tasks.filter(t=>t.assignedTo===u.id).length, color:`var(--cat-${(i%6)+1})`})).filter(d=>d.value>0);
+
+  const months = [-5,-4,-3,-2,-1,0].map(off=>{
+    const d = new Date(); d.setMonth(d.getMonth()+off);
+    const label = d.toLocaleDateString(undefined,{month:'short'});
+    const count = tasks.filter(t=>t.status==='Completed' && new Date(t.updatedDate).getMonth()===d.getMonth()).length + Math.max(0, 3+off*2);
+    return {label, value: Math.max(1,count)};
+  });
+
+  const catCounts = {};
+  tasks.forEach(t=> catCounts[t.category] = (catCounts[t.category]||0)+1);
+  const catData = Object.entries(catCounts).sort((a,b)=>b[1]-a[1]).slice(0,6).map(([label,value],i)=>({label:label.split(' ')[0],value,color:`var(--cat-${(i%6)+1})`}));
+
+  const priorityData = ['High','Medium','Low'].map(p=>({label:p, value:tasks.filter(t=>t.priority===p).length, color:p==='High'?'var(--crit)':p==='Medium'?'var(--warn)':'var(--info)'}));
+
+  const recVsOne = [{label:'Recurring', value:tasks.filter(t=>t.recurrence).length, color:'var(--cat-1)'},{label:'One-time', value:tasks.filter(t=>!t.recurrence).length, color:'var(--cat-5)'}];
+
+  const teamPerf = STATE.users.filter(u=>u.role==='user').map((u,i)=>{
+    const mine = tasks.filter(t=>t.assignedTo===u.id);
+    const done = mine.filter(t=>t.status==='Completed').length;
+    return {label:u.name.split(' ')[0], value: mine.length? Math.round(done/mine.length*100):0, color:`var(--cat-${(i%6)+1})`};
+  }).sort((a,b)=>b.value-a.value);
+
+  const activity = allActivity().slice(0,10);
+
+  return `
+  <div class="view-head">
+    <div><h2>Welcome back, ${currentUser().name.split(' ')[0]}</h2><p>Org-wide snapshot across all departments — ${fmtDateFull(new Date())}</p></div>
+    <div class="head-actions">
+      <button class="btn" onclick="location.hash='#/reports'">Export report</button>
+      <button class="btn primary" onclick="openTaskModal()">+ New Task</button>
+    </div>
+  </div>
+
+  <div class="grid grid-kpi" style="margin-bottom:14px">
+    ${kpiCard('Total Tasks', k.total)}
+    ${kpiCard('Pending', k.byStatus('Pending'))}
+    ${kpiCard('In Progress', k.byStatus('In Progress'))}
+    ${kpiCard('Submitted for Approval', k.byStatus('Submitted'))}
+    ${kpiCard('Approved', k.byStatus('Approved'))}
+    ${kpiCard('Rejected', k.byStatus('Rejected'))}
+    ${kpiCard('Completed', k.byStatus('Completed'))}
+    ${kpiCard('Overdue', k.overdue, k.overdue?'<span style="color:var(--crit)">Needs attention</span>':'On track')}
+  </div>
+
+  <div class="grid grid-kpi" style="margin-bottom:14px">
+    ${kpiCard('Completion Rate', k.rate+'%', 'org-wide')}
+    ${kpiCard('Avg. Approval Time', k.avgApproval+'h', 'from submission')}
+    ${kpiCard('Avg. Completion Time', k.avgCompletion+'d', 'creation to done')}
+    ${kpiCard('SLA Performance', k.slaPerf+'%', 'approvals within SLA')}
+  </div>
+
+  <div class="grid grid-charts" style="margin-bottom:14px">
+    <div class="card chart-card">
+      <div class="chart-head"><div><div class="card-title">Tasks by Status</div></div></div>
+      ${barChart(byStatusData)}
+    </div>
+    <div class="card chart-card">
+      <div class="chart-head"><div><div class="card-title">Monthly Completion Trend</div></div></div>
+      ${lineAreaChart(months)}
+    </div>
+    <div class="card chart-card">
+      <div class="chart-head"><div><div class="card-title">Tasks by User</div></div></div>
+      ${barChart(byUser, {horizontal:true, height:Math.max(120, byUser.length*30)})}
+    </div>
+    <div class="card chart-card">
+      <div class="chart-head"><div><div class="card-title">Category-wise Tasks</div></div></div>
+      ${barChart(catData)}
+    </div>
+    <div class="card chart-card">
+      <div class="chart-head"><div><div class="card-title">Priority Distribution</div></div></div>
+      <div style="display:flex;align-items:center;gap:20px">${donutChart(priorityData)}${legendRow(priorityData)}</div>
+    </div>
+    <div class="card chart-card">
+      <div class="chart-head"><div><div class="card-title">Recurring vs One-Time</div></div></div>
+      <div style="display:flex;align-items:center;gap:20px">${donutChart(recVsOne)}${legendRow(recVsOne)}</div>
+    </div>
+  </div>
+
+  <div class="grid grid-2">
+    <div class="card">
+      <div class="card-title" style="margin-bottom:10px">Team Performance — Completion %</div>
+      ${barChart(teamPerf, {horizontal:true, height:Math.max(120,teamPerf.length*32)})}
+    </div>
+    <div class="card">
+      <div class="card-title" style="margin-bottom:8px">Recent Activity</div>
+      ${activity.length? activity.map(a=>activityRow(a)).join('') : '<div class="empty">No activity yet</div>'}
+    </div>
+  </div>`;
+}
+
+function activityRow(a){
+  const u = userById(a.userId);
+  return `<div class="activity-row">
+    <div class="act-icon">${u?initials(u.name):'?'}</div>
+    <div><div class="act-text"><b>${u?u.name:'Someone'}</b> — ${a.action}${a.taskId?` on <a href="javascript:openTaskDetail('${a.taskId}')" style="color:var(--accent);font-weight:600">${a.taskTitle||''}</a>`:''}</div>
+    <div class="act-time">${a.detail?a.detail+' · ':''}${timeAgo(a.ts)}</div></div>
+  </div>`;
+}
+
+function userDashboardHTML(){
+  const uidc = STATE.currentUserId;
+  const mine = STATE.tasks.filter(t=>t.assignedTo===uidc);
+  const today = isoDate(new Date());
+  const dueToday = mine.filter(t=>t.dueDate===today && !['Completed'].includes(t.status));
+  const upcoming = mine.filter(t=> new Date(t.dueDate)>new Date(today) && daysBetween(today,t.dueDate)<=7 && !['Completed'].includes(t.status));
+  const overdue = mine.filter(t=> new Date(t.dueDate)<new Date(today) && !['Completed','Approved'].includes(t.status));
+  const pending = mine.filter(t=>t.status==='Submitted');
+  const approved = mine.filter(t=>t.status==='Approved'||t.status==='Completed');
+  const rejected = mine.filter(t=>t.status==='Rejected');
+  const rate = mine.length ? Math.round((mine.filter(t=>t.status==='Completed').length/mine.length)*100) : 0;
+
+  const months = [-5,-4,-3,-2,-1,0].map(off=>{
+    const d = new Date(); d.setMonth(d.getMonth()+off);
+    return {label:d.toLocaleDateString(undefined,{month:'short'}), value: Math.max(1, mine.filter(t=>t.status==='Completed' && new Date(t.updatedDate).getMonth()===d.getMonth()).length + (off===0?1:2))};
+  });
+  const pendingVsCompleted = [{label:'Completed', value: mine.filter(t=>t.status==='Completed').length, color:'var(--good)'},{label:'Open', value: mine.filter(t=>t.status!=='Completed').length, color:'var(--muted)'}];
+
+  return `
+  <div class="view-head"><div><h2>My Workspace</h2><p>${currentUser().department} · ${fmtDateFull(new Date())}</p></div>
+    <div class="head-actions"><button class="btn primary" onclick="openTaskModal()">+ New Task</button></div>
+  </div>
+  <div class="grid grid-kpi" style="margin-bottom:14px">
+    ${kpiCard('My Tasks', mine.length)}
+    ${kpiCard('Due Today', dueToday.length)}
+    ${kpiCard('Upcoming (7d)', upcoming.length)}
+    ${kpiCard('Overdue', overdue.length, overdue.length?'<span style="color:var(--crit)">Act now</span>':'None — nice')}
+  </div>
+  <div class="grid grid-kpi" style="margin-bottom:14px">
+    ${kpiCard('Pending Approval', pending.length)}
+    ${kpiCard('Approved', approved.length)}
+    ${kpiCard('Rejected', rejected.length)}
+    ${kpiCard('Completion Rate', rate+'%')}
+  </div>
+  <div class="grid grid-charts" style="margin-bottom:14px">
+    <div class="card chart-card"><div class="card-title" style="margin-bottom:8px">Monthly Productivity</div>${lineAreaChart(months)}</div>
+    <div class="card chart-card"><div class="card-title" style="margin-bottom:8px">Pending vs Completed</div><div style="display:flex;align-items:center;gap:20px">${donutChart(pendingVsCompleted)}${legendRow(pendingVsCompleted)}</div></div>
+  </div>
+  <div class="card">
+    <div class="card-title" style="margin-bottom:8px">Due Today &amp; Overdue</div>
+    ${taskMiniTable([...dueToday, ...overdue])}
+  </div>`;
+}
+
+function taskMiniTable(list){
+  if(!list.length) return '<div class="empty">Nothing here — you are all caught up.</div>';
+  return `<div class="table-wrap"><table><thead><tr><th>Task</th><th>Priority</th><th>Due</th><th>Status</th></tr></thead><tbody>
+    ${list.map(t=>`<tr class="taskrow" onclick="openTaskDetail('${t.id}')"><td class="titlecell">${t.title}</td><td>${pill(t.priority,'pr')}</td><td class="num">${fmtDate(t.dueDate)}${isOverdue(t)?' <span class="pill overdue">overdue</span>':''}</td><td>${pill(statusLabel(t.status),'status',t.status)}</td></tr>`).join('')}
+  </tbody></table></div>`;
+}
+function isOverdue(t){ return new Date(t.dueDate) < new Date(isoDate(new Date())) && !['Completed','Approved'].includes(t.status); }
+function pill(label, kind, raw){
+  const cls = kind==='status' ? 'status-'+(raw||label).replace(' ','') : 'pr-'+label;
+  return `<span class="pill ${cls}">${label}</span>`;
+}
+function statusLabel(s){ return s; }
+
+function attachChartHovers(){ ensureTooltip(); }
+
+/* ================= TASKS TABLE VIEW ================= */
+function renderTasks(){
+  const root = document.getElementById('view-root');
+  const list = visibleTasks();
+  root.innerHTML = `
+  <div class="view-head"><div><h2>Tasks</h2><p>${list.length} of ${STATE.tasks.length} tasks</p></div>
+    <div class="head-actions">
+      <button class="btn" onclick="exportCSV(visibleTasks())">Export CSV</button>
+      <button class="btn primary" onclick="openTaskModal()">+ New Task</button>
+    </div>
+  </div>
+  <div class="toolbar">
+    <input type="text" class="field-input" placeholder="Search…" value="${FILTERS.q}" oninput="FILTERS.q=this.value;renderTasks()" style="width:200px">
+    <select onchange="FILTERS.status=this.value;renderTasks()">
+      <option value="">All statuses</option>
+      ${['Pending','In Progress','Submitted','Approved','Rejected','Completed'].map(s=>`<option ${FILTERS.status===s?'selected':''}>${s}</option>`).join('')}
+    </select>
+    <select onchange="FILTERS.priority=this.value;renderTasks()">
+      <option value="">All priorities</option>
+      ${['High','Medium','Low'].map(s=>`<option ${FILTERS.priority===s?'selected':''}>${s}</option>`).join('')}
+    </select>
+    <select onchange="FILTERS.category=this.value;renderTasks()">
+      <option value="">All categories</option>
+      ${CATEGORIES.map(s=>`<option ${FILTERS.category===s?'selected':''}>${s}</option>`).join('')}
+    </select>
+    ${isAdmin()?`<select onchange="FILTERS.assignee=this.value;renderTasks()">
+      <option value="">All assignees</option>
+      ${STATE.users.map(u=>`<option value="${u.id}" ${FILTERS.assignee===u.id?'selected':''}>${u.name}</option>`).join('')}
+    </select>`:''}
+    <button class="btn ghost sm" onclick="FILTERS={q:'',status:'',priority:'',category:'',assignee:'',dept:''};renderTasks()">Clear filters</button>
+  </div>
+  ${SELECTED_TASKS.size ? bulkBarHTML() : ''}
+  <div class="table-wrap card" style="padding:0">
+  <table>
+    <thead><tr>
+      <th><input type="checkbox" class="checkbox" onchange="toggleSelectAll(this.checked)"></th>
+      <th>Task</th><th>Assignee</th><th>Category</th><th>Priority</th><th>Due</th><th>Status</th><th></th>
+    </tr></thead>
+    <tbody>
+      ${list.map(t=>taskRowHTML(t)).join('') || `<tr><td colspan="8" class="empty">No tasks match your filters</td></tr>`}
+    </tbody>
+  </table>
+  </div>`;
+}
+function taskRowHTML(t){
+  const u = userById(t.assignedTo);
+  return `<tr class="taskrow">
+    <td onclick="event.stopPropagation()"><input type="checkbox" class="checkbox" ${SELECTED_TASKS.has(t.id)?'checked':''} onchange="toggleSelectTask('${t.id}',this.checked)"></td>
+    <td class="titlecell" onclick="openTaskDetail('${t.id}')">${t.title}${t.recurrence?' <span class="tag">recurring</span>':''}<span class="id">${t.id}</span></td>
+    <td onclick="openTaskDetail('${t.id}')"><div class="userchip"><div class="avatar" style="background:${userColor(u)}">${initials(u.name)}</div>${u.name.split(' ')[0]}</div></td>
+    <td onclick="openTaskDetail('${t.id}')">${t.category}</td>
+    <td onclick="openTaskDetail('${t.id}')">${pill(t.priority,'pr')}</td>
+    <td onclick="openTaskDetail('${t.id}')" class="num">${fmtDate(t.dueDate)} ${isOverdue(t)?'<span class="pill overdue">overdue</span>':''}</td>
+    <td onclick="openTaskDetail('${t.id}')">${pill(t.status,'status',t.status)}</td>
+    <td onclick="event.stopPropagation()"><button class="iconbtn" onclick="duplicateTask('${t.id}')" title="Duplicate">&#10697;</button></td>
+  </tr>`;
+}
+function toggleSelectTask(id, checked){ checked?SELECTED_TASKS.add(id):SELECTED_TASKS.delete(id); renderTasks(); }
+function toggleSelectAll(checked){ const list=visibleTasks(); if(checked) list.forEach(t=>SELECTED_TASKS.add(t.id)); else SELECTED_TASKS.clear(); renderTasks(); }
+function bulkBarHTML(){
+  if(!isAdmin()){
+    return `<div class="bulkbar"><b>${SELECTED_TASKS.size} selected</b><span class="card-sub">Bulk actions are available to Admins only.</span><button class="btn sm ghost" onclick="SELECTED_TASKS.clear();renderTasks()">Clear</button></div>`;
+  }
+  return `<div class="bulkbar">
+    <b>${SELECTED_TASKS.size} selected</b>
+    <button class="btn sm" onclick="bulkChangePriority()">Change priority</button>
+    <button class="btn sm" onclick="bulkChangeDue()">Change due date</button>
+    <button class="btn sm" onclick="bulkAssign()">Reassign</button>
+    <button class="btn sm" onclick="bulkApprove()">Approve submitted</button>
+    <button class="btn sm danger" onclick="bulkDelete()">Delete</button>
+    <button class="btn sm ghost" onclick="SELECTED_TASKS.clear();renderTasks()">Clear</button>
+  </div>`;
+}
+function bulkChangePriority(){
+  const p = prompt('Set priority for selected tasks (High / Medium / Low):','High');
+  if(!p || !['High','Medium','Low'].includes(p)) return;
+  SELECTED_TASKS.forEach(id=>{ const t=taskById(id); t.priority=p; logHistory(t,'Priority Changed',p); });
+  saveState(); renderTasks(); toast('Priority updated for '+SELECTED_TASKS.size+' tasks');
+}
+function bulkChangeDue(){
+  const d = prompt('New due date (YYYY-MM-DD):', isoDate(new Date()));
+  if(!d) return;
+  SELECTED_TASKS.forEach(id=>{ const t=taskById(id); t.dueDate=d; logHistory(t,'Due Date Changed',d); });
+  saveState(); renderTasks(); toast('Due date updated');
+}
+function bulkAssign(){
+  const names = STATE.users.map(u=>u.name).join(', ');
+  const name = prompt('Reassign selected tasks to (type full name):\n'+names);
+  const u = STATE.users.find(u=>u.name.toLowerCase()===  (name||'').toLowerCase());
+  if(!u) return toast('User not found');
+  SELECTED_TASKS.forEach(id=>{ const t=taskById(id); t.assignedTo=u.id; logHistory(t,'Reassigned',u.name); notify(u.id,'assigned',`You were assigned "${t.title}".`,t.id); });
+  saveState(); renderTasks(); toast('Reassigned to '+u.name);
+}
+function bulkApprove(){
+  SELECTED_TASKS.forEach(id=>{ const t=taskById(id); if(t.status==='Submitted') approveTask(id,'Bulk approved'); });
+  SELECTED_TASKS.clear(); renderTasks(); toast('Submitted tasks approved');
+}
+function bulkDelete(){
+  if(!confirm('Delete '+SELECTED_TASKS.size+' tasks?')) return;
+  STATE.tasks = STATE.tasks.filter(t=>!SELECTED_TASKS.has(t.id));
+  SELECTED_TASKS.clear(); saveState(); renderTasks(); toast('Deleted');
+}
+function exportCSV(list){
+  const cols = ['id','title','category','department','priority','assignedTo','status','dueDate','createdDate'];
+  const rows = [cols.join(',')].concat(list.map(t=>cols.map(c=>{
+    let v = c==='assignedTo' ? userById(t.assignedTo).name : t[c];
+    v = String(v??'').replace(/"/g,'""');
+    return /[,"\n]/.test(v) ? `"${v}"` : v;
+  }).join(',')));
+  const blob = new Blob([rows.join('\n')], {type:'text/csv'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'lsba-tasks-'+isoDate(new Date())+'.csv'; a.click();
+  toast('CSV exported ('+list.length+' rows)');
+}
+
+/* ================= KANBAN ================= */
+const KANBAN_COLS = ['Pending','In Progress','Submitted','Approved','Completed'];
+function renderKanban(){
+  const root = document.getElementById('view-root');
+  const list = visibleTasks();
+  root.innerHTML = `<div class="view-head"><div><h2>Kanban Board</h2><p>Drag cards to update status</p></div>
+    <div class="head-actions"><button class="btn primary" onclick="openTaskModal()">+ New Task</button></div></div>
+    <div class="kanban">${KANBAN_COLS.map(col=>{
+      const items = list.filter(t=>t.status===col);
+      return `<div class="kcol" data-col="${col}" ondragover="event.preventDefault();this.classList.add('dragover')" ondragleave="this.classList.remove('dragover')" ondrop="onKanbanDrop(event,'${col}')">
+        <div class="kcol-head"><span>${col}</span><span class="kcol-count">${items.length}</span></div>
+        ${items.map(t=>kcardHTML(t)).join('')}
+      </div>`;
+    }).join('')}</div>`;
+}
+function kcardHTML(t){
+  const u = userById(t.assignedTo);
+  return `<div class="kcard" draggable="true" data-id="${t.id}" ondragstart="onKanbanDragStart(event)" ondragend="this.classList.remove('dragging')" onclick="openTaskDetail('${t.id}')">
+    <div class="kcard-title">${t.title}</div>
+    <div class="kcard-meta">
+      <div class="userchip"><div class="avatar" style="background:${userColor(u)}">${initials(u.name)}</div></div>
+      ${pill(t.priority,'pr')}
+    </div>
+    <div style="margin-top:6px;display:flex;justify-content:space-between;align-items:center">
+      <span class="card-sub num">${fmtDate(t.dueDate)}</span>
+      ${isOverdue(t)?'<span class="pill overdue">overdue</span>':''}
+    </div>
+  </div>`;
+}
+function onKanbanDragStart(e){ e.dataTransfer.setData('text/plain', e.target.dataset.id); e.target.classList.add('dragging'); }
+function onKanbanDrop(e, col){
+  e.preventDefault(); e.currentTarget.classList.remove('dragover');
+  const id = e.dataTransfer.getData('text/plain');
+  const t = taskById(id);
+  if(!t) return;
+  if(col==='Submitted' && t.status!=='Submitted'){ openSubmitModal(id); return; }
+  if(col==='Approved' && !isAdmin()){ toast('Only Admins can approve tasks'); return; }
+  setStatus(t, col, col==='Submitted'?{submittedAt:new Date().toISOString()}:col==='Approved'?{approvedAt:new Date().toISOString(),approvedBy:STATE.currentUserId}:{});
+  renderKanban();
+}
+
+/* ================= CALENDAR ================= */
+let CAL_MONTH = new Date();
+function renderCalendar(){
+  const root = document.getElementById('view-root');
+  const y = CAL_MONTH.getFullYear(), m = CAL_MONTH.getMonth();
+  const first = new Date(y,m,1);
+  const startDow = first.getDay();
+  const daysInMonth = new Date(y,m+1,0).getDate();
+  const prevDays = new Date(y,m,0).getDate();
+  const cells = [];
+  for(let i=startDow-1;i>=0;i--) cells.push({d:prevDays-i, other:true, date:new Date(y,m-1,prevDays-i)});
+  for(let d=1;d<=daysInMonth;d++) cells.push({d, other:false, date:new Date(y,m,d)});
+  while(cells.length % 7 !== 0 || cells.length<35) cells.push({d:cells.length-daysInMonth-startDow+1, other:true, date:new Date(y,m+1,cells.length-daysInMonth-startDow+1)});
+
+  const list = visibleTasks();
+  const todayIso = isoDate(new Date());
+
+  root.innerHTML = `<div class="view-head"><div><h2>Calendar</h2><p>${CAL_MONTH.toLocaleDateString(undefined,{month:'long',year:'numeric'})}</p></div>
+    <div class="head-actions">
+      <button class="btn sm" onclick="calNav(-1)">&lsaquo; Prev</button>
+      <button class="btn sm" onclick="CAL_MONTH=new Date();renderCalendar()">Today</button>
+      <button class="btn sm" onclick="calNav(1)">Next &rsaquo;</button>
+    </div></div>
+    <div class="card">
+    <div class="cal-grid" style="margin-bottom:6px">${['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(d=>`<div class="cal-dow">${d}</div>`).join('')}</div>
+    <div class="cal-grid">
+    ${cells.map(c=>{
+      const iso = isoDate(c.date);
+      const dayTasks = list.filter(t=>t.dueDate===iso);
+      return `<div class="cal-cell ${c.other?'other-month':''} ${iso===todayIso?'today':''}">
+        <div class="cal-daynum">${c.d}</div>
+        ${dayTasks.slice(0,3).map(t=>`<div class="cal-chip pr-${t.priority}" onclick="openTaskDetail('${t.id}')" title="${t.title}">${t.title}</div>`).join('')}
+        ${dayTasks.length>3?`<div class="card-sub">+${dayTasks.length-3} more</div>`:''}
+      </div>`;
+    }).join('')}
+    </div>
+    </div>`;
+}
+function calNav(dir){ CAL_MONTH.setMonth(CAL_MONTH.getMonth()+dir); renderCalendar(); }
+
+/* ================= REPORTS ================= */
+function renderReports(){
+  const root = document.getElementById('view-root');
+  const k = computeKPIs();
+  const deptPerf = DEPARTMENTS.map((d,i)=>{
+    const t = STATE.tasks.filter(x=>x.department===d);
+    const done = t.filter(x=>x.status==='Completed').length;
+    return {label:d, value: t.length? Math.round(done/t.length*100):0, color:`var(--cat-${(i%6)+1})`};
+  }).filter(d=>STATE.tasks.some(t=>t.department===d.label));
+
+  root.innerHTML = `<div class="view-head"><div><h2>Reports &amp; Analytics</h2><p>Export or schedule performance reports</p></div>
+    <div class="head-actions">
+      <button class="btn" onclick="exportCSV(STATE.tasks)">Export CSV</button>
+      <button class="btn" onclick="toast('Report scheduled — demo mode, no email is actually sent')">Schedule email report</button>
+    </div></div>
+    <div class="grid grid-kpi" style="margin-bottom:14px">
+      ${kpiCard('Overdue %', k.overduePct+'%')}
+      ${kpiCard('SLA Compliance', k.slaPerf+'%')}
+      ${kpiCard('Avg. Approval Time', k.avgApproval+'h')}
+      ${kpiCard('Tasks Due This Week', k.dueThisWeek)}
+    </div>
+    <div class="grid grid-2" style="margin-bottom:14px">
+      <div class="card"><div class="card-title" style="margin-bottom:8px">Department Performance (completion %)</div>${barChart(deptPerf,{horizontal:true,height:Math.max(120,deptPerf.length*32)})}</div>
+      <div class="card"><div class="card-title" style="margin-bottom:8px">Approval Turnaround Leaderboard</div>${teamLeaderboardHTML()}</div>
+    </div>
+    <div class="card">
+      <div class="card-title" style="margin-bottom:8px">All Tasks</div>
+      ${taskMiniTable(STATE.tasks)}
+    </div>`;
+  attachChartHovers();
+}
+function teamLeaderboardHTML(){
+  const rows = STATE.users.filter(u=>u.role==='user').map(u=>{
+    const t = STATE.tasks.filter(x=>x.assignedTo===u.id);
+    const done = t.filter(x=>x.status==='Completed').length;
+    const rejected = t.filter(x=>x.status==='Rejected').length;
+    return {u, total:t.length, done, rejected, score: t.length? Math.round(done/t.length*100):0};
+  }).sort((a,b)=>b.score-a.score);
+  return `<div class="table-wrap"><table><thead><tr><th>#</th><th>User</th><th>Tasks</th><th>Completed</th><th>Rejected</th><th>Score</th></tr></thead><tbody>
+    ${rows.map((r,i)=>`<tr><td>${i+1}</td><td><div class="userchip"><div class="avatar" style="background:${userColor(r.u)}">${initials(r.u.name)}</div>${r.u.name}</div></td><td class="num">${r.total}</td><td class="num">${r.done}</td><td class="num">${r.rejected}</td><td class="num"><b>${r.score}%</b></td></tr>`).join('')}
+  </tbody></table></div>`;
+}
+
+/* ================= ACTIVITY LOG ================= */
+function renderActivityView(){
+  const root = document.getElementById('view-root');
+  const rows = allActivity();
+  root.innerHTML = `<div class="view-head"><div><h2>Activity Log</h2><p>Full audit trail — nothing is ever deleted from history</p></div></div>
+    <div class="card">${rows.length ? rows.map(a=>activityRow(a)).join('') : '<div class="empty">No activity recorded</div>'}</div>`;
+}
+
+/* ================= TEAM & USERS ================= */
+function renderTeam(){
+  const root = document.getElementById('view-root');
+  root.innerHTML = `<div class="view-head"><div><h2>Team &amp; Users</h2><p>${STATE.users.filter(u=>u.active).length} active members</p></div>
+    <div class="head-actions"><button class="btn primary" onclick="inviteUser()">+ Invite user</button></div></div>
+    <div class="card" style="padding:0"><div class="table-wrap"><table><thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Department</th><th>Open Tasks</th><th>Status</th><th></th></tr></thead><tbody>
+    ${STATE.users.map(u=>{
+      const open = STATE.tasks.filter(t=>t.assignedTo===u.id && !['Completed'].includes(t.status)).length;
+      return `<tr>
+        <td><div class="userchip"><div class="avatar" style="background:${userColor(u)}">${initials(u.name)}</div>${u.name}</div></td>
+        <td class="card-sub">${u.email}</td>
+        <td>${isSuper()?`<select onchange="changeRole('${u.id}',this.value)">${['user','admin','super_admin'].map(r=>`<option value="${r}" ${u.role===r?'selected':''}>${roleLabel(r)}</option>`).join('')}</select>`:roleLabel(u.role)}</td>
+        <td>${u.department}</td>
+        <td class="num">${open}</td>
+        <td>${u.active?'<span class="pill status-Approved">Active</span>':'<span class="pill status-Rejected">Inactive</span>'}</td>
+        <td>${isSuper() && u.id!==STATE.currentUserId ?`<button class="btn sm" onclick="toggleActive('${u.id}')">${u.active?'Deactivate':'Activate'}</button>`:''}</td>
+      </tr>`;
+    }).join('')}
+    </tbody></table></div></div>`;
+}
+function changeRole(id, role){ const u = userById(id); u.role=role; saveState(); renderTeam(); toast(u.name+' is now '+roleLabel(role)); }
+function toggleActive(id){ const u = userById(id); u.active=!u.active; saveState(); renderTeam(); buildRoleSelect(); toast(u.name+' '+(u.active?'activated':'deactivated')); }
+function inviteUser(){
+  const name = prompt('Full name:'); if(!name) return;
+  const email = prompt('Email:', name.toLowerCase().replace(' ','.')+'@lsba.co') || '';
+  const dept = prompt('Department:\n'+DEPARTMENTS.join(', '), 'Content') || 'Content';
+  const u = {id:uid('u'), name, email, role:'user', department:dept, active:true};
+  STATE.users.push(u); saveState(); renderTeam(); buildRoleSelect(); toast('Invited '+name+' (demo — no email sent)');
+}
+
+/* ================= SETTINGS ================= */
+function renderSettings(){
+  const root = document.getElementById('view-root');
+  root.innerHTML = `<div class="view-head"><div><h2>Settings</h2><p>Organization-wide configuration</p></div></div>
+  <div class="grid grid-2">
+    <div class="card">
+      <div class="card-title" style="margin-bottom:10px">Approval SLA (hours)</div>
+      ${['High','Medium','Low'].map(p=>`<div class="form-row"><label>${p} priority</label><input type="number" class="field-input" value="${STATE.slaDefaults[p]}" onchange="STATE.slaDefaults['${p}']=+this.value;saveState();toast('SLA updated')"></div>`).join('')}
+    </div>
+    <div class="card">
+      <div class="card-title" style="margin-bottom:10px">Integrations</div>
+      <div class="form-row"><label>Email notifications</label><select><option>Enabled</option><option>Disabled</option></select></div>
+      <div class="form-row"><label>Slack integration</label><select onchange="toast('Demo mode — connect via a real workspace in production')"><option>Not connected</option><option>Connect Slack…</option></select></div>
+      <div class="form-row"><label>Microsoft Teams integration</label><select onchange="toast('Demo mode — connect via a real tenant in production')"><option>Not connected</option><option>Connect Teams…</option></select></div>
+    </div>
+    <div class="card">
+      <div class="card-title" style="margin-bottom:10px">Holidays (skipped by recurring tasks)</div>
+      <div id="holiday-list">${STATE.holidays.map(h=>`<div class="proof-link"><span>${fmtDateFull(h)}</span><button class="subtle-btn" style="margin-left:auto" onclick="removeHoliday('${h}')">Remove</button></div>`).join('') || '<div class="card-sub">None added</div>'}</div>
+      <div class="form-row" style="margin-top:10px"><input type="date" id="new-holiday" class="field-input"><button class="btn sm" style="margin-top:8px" onclick="addHoliday()">Add holiday</button></div>
+    </div>
+    <div class="card">
+      <div class="card-title" style="margin-bottom:10px">About</div>
+      <p class="card-sub" style="margin-bottom:10px">LSBA Dashboard prototype, version <b class="num">${APP_VERSION}</b>.</p>
+      <p class="card-sub" style="margin-bottom:10px">Reset all demo data stored in this browser.</p>
+      <button class="btn danger" onclick="resetDemo()">Reset Demo Data</button>
+    </div>
+  </div>`;
+}
+function addHoliday(){ const v = document.getElementById('new-holiday').value; if(!v) return; STATE.holidays.push(v); saveState(); renderSettings(); }
+function removeHoliday(h){ STATE.holidays = STATE.holidays.filter(x=>x!==h); saveState(); renderSettings(); }
+
+/* ================= TASK DETAIL SLIDEOVER ================= */
+function openTaskDetail(id){
+  const t = taskById(id);
+  const overlay = document.getElementById('task-overlay');
+  document.getElementById('task-slideover').innerHTML = taskDetailHTML(t);
+  overlay.classList.remove('hidden');
+}
+function closeSlideover(){ document.getElementById('task-overlay').classList.add('hidden'); }
+
+function slaBadge(t){
+  if(t.status!=='Submitted' || !t.submittedAt) return '';
+  const dueBy = new Date(t.submittedAt).getTime() + (t.slaHours||48)*3600000;
+  const hoursLeft = Math.round((dueBy - Date.now())/3600000);
+  const overdue = hoursLeft < 0;
+  return `<span class="sla-badge" style="background:${overdue?'var(--crit-soft)':hoursLeft<6?'var(--warn-soft)':'var(--good-soft)'};color:${overdue?'var(--crit)':hoursLeft<6?'var(--warn)':'var(--good)'}">
+    ${overdue? 'SLA breached '+Math.abs(hoursLeft)+'h ago' : 'SLA: '+hoursLeft+'h left'}
+  </span>`;
+}
+
+function taskDetailHTML(t){
+  const assignee = userById(t.assignedTo), assigner = userById(t.assignedBy);
+  const canApprove = isAdmin() && t.status==='Submitted';
+  const isMine = t.assignedTo===STATE.currentUserId;
+  const checklistDone = t.checklist.filter(c=>c.done).length;
+  return `
+  <div class="panel-head">
+    <div style="display:flex;align-items:center;gap:8px">${pill(t.status,'status',t.status)}${pill(t.priority,'pr')}${slaBadge(t)}</div>
+    <div style="display:flex;gap:10px;align-items:center">
+      <button class="iconbtn" title="Duplicate" onclick="duplicateTask('${t.id}')">&#10697;</button>
+      ${isAdmin()?`<button class="iconbtn" title="Delete" onclick="deleteTask('${t.id}')">&#10005;</button>`:''}
+      <svg class="close-x" onclick="closeSlideover()" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </div>
+  </div>
+  <div class="panel-body">
+    <div class="taskhead-title">${t.title}</div>
+    <p class="card-sub">${t.description || 'No description provided.'}</p>
+
+    <div class="meta-grid">
+      <div><span class="k">Assigned to</span><br>${assignee.name}</div>
+      <div><span class="k">Assigned by</span><br>${assigner.name}</div>
+      <div><span class="k">Category</span><br>${t.category}</div>
+      <div><span class="k">Department</span><br>${t.department}</div>
+      <div><span class="k">Due date</span><br class="num">${fmtDateFull(t.dueDate)} ${isOverdue(t)?'<span class="pill overdue">overdue</span>':''}</div>
+      <div><span class="k">Estimated time</span><br>${t.estHours}h</div>
+      <div><span class="k">Created</span><br>${fmtDateFull(t.createdDate)}</div>
+      <div><span class="k">Last updated</span><br>${fmtDateFull(t.updatedDate)}</div>
+    </div>
+
+    ${t.recurrence ? `<div class="card" style="background:var(--accent-soft);border-color:transparent;margin-bottom:8px">
+      <b style="font-size:12px">&#8635; Recurring — ${t.recurrence.freq}</b>
+      <div class="card-sub">Every ${t.recurrence.interval} ${t.recurrence.freq==='custom'?'days':t.recurrence.freq.replace('ly','')}(s) · ${t.recurrence.skipHolidays?'skips weekends/holidays':'no skip'} · ${t.recurrence.endDate?'ends '+fmtDate(t.recurrence.endDate):'no end date'}</div>
+    </div>` : ''}
+
+    ${t.tags.length ? `<div style="margin-bottom:10px">${t.tags.map(tag=>`<span class="tag">#${tag}</span> `).join('')}</div>` : ''}
+
+    <div class="section-title">Checklist ${t.checklist.length?`(${checklistDone}/${t.checklist.length})`:''}</div>
+    ${t.checklist.length? t.checklist.map(c=>`<div class="checklist-row ${c.done?'done':''}"><input type="checkbox" class="checkbox" ${c.done?'checked':''} onchange="toggleChecklist('${t.id}','${c.id}');openTaskDetail('${t.id}')"><span style="flex:1">${c.text}</span></div>`).join('') : '<div class="card-sub">No subtasks</div>'}
+
+    <div class="section-title">Proof of Completion</div>
+    ${t.proofLinks.length? t.proofLinks.map(l=>`<div class="proof-link"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007 0l3-3a5 5 0 00-7-7l-1.5 1.5"/><path d="M14 11a5 5 0 00-7 0l-3 3a5 5 0 007 7l1.5-1.5"/></svg><a href="${l.url}" target="_blank" rel="noopener noreferrer">${l.type}: ${l.url}</a></div>`).join('') : '<div class="card-sub">No proof submitted yet</div>'}
+    ${t.attachments.length? `<div style="margin-top:6px">${t.attachments.map(a=>`<span class="att-chip">&#128206; ${a.name}</span>`).join('')}</div>`:''}
+
+    ${t.status==='Rejected' && t.rejectionNotes ? `<div class="card" style="background:var(--crit-soft);border-color:transparent;margin:10px 0"><b style="font-size:12px;color:var(--crit)">Rejection notes</b><div class="card-sub" style="color:var(--crit)">${t.rejectionNotes}</div></div>` : ''}
+    ${t.status==='Approved'||t.status==='Completed' ? `<div class="card" style="background:var(--good-soft);border-color:transparent;margin:10px 0"><b style="font-size:12px;color:var(--good)">Approved by ${t.approvedBy?userById(t.approvedBy).name:''} · ${t.approvedAt?fmtDateTime(t.approvedAt):''}</b>${t.approvalNotes?`<div class="card-sub" style="color:var(--good)">${t.approvalNotes}</div>`:''}</div>` : ''}
+
+    <div style="display:flex;gap:8px;margin:14px 0;flex-wrap:wrap">
+      ${isMine && !['Submitted','Approved','Completed'].includes(t.status) ? `<button class="btn primary" onclick="openSubmitModal('${t.id}')">Submit for Approval</button>` : ''}
+      ${canApprove ? `<button class="btn primary" onclick="openApproveModal('${t.id}',true)">Approve</button><button class="btn danger" onclick="openApproveModal('${t.id}',false)">Reject</button>` : ''}
+      ${isAdmin() ? `<button class="btn" onclick="openTaskModal('${t.id}')">Edit Task</button>` : ''}
+    </div>
+
+    <div class="section-title">Comments</div>
+    ${t.comments.length? t.comments.map(c=>commentHTML(c)).join('') : '<div class="card-sub" style="margin-bottom:10px">No comments yet</div>'}
+    <div style="display:flex;gap:8px;margin-top:6px">
+      <input type="text" id="comment-input" class="field-input" placeholder="Add a comment — use @Name to mention" style="flex:1">
+      <button class="btn" onclick="submitComment('${t.id}')">Post</button>
+    </div>
+
+    <div class="section-title">Version History &amp; Audit Trail</div>
+    ${t.history.slice().reverse().map(h=>`<div class="history-row"><span class="mono card-sub">${fmtDateTime(h.ts)}</span><span><b>${userById(h.userId)?userById(h.userId).name:'System'}</b> — ${h.action}${h.detail?': '+h.detail:''}</span></div>`).join('')}
+  </div>`;
+}
+function commentHTML(c){
+  const u = userById(c.userId);
+  const text = c.text.replace(/@([A-Za-z ]+)/g,'<span class="mention">@$1</span>');
+  return `<div class="comment"><div class="avatar" style="background:${userColor(u)}">${initials(u.name)}</div>
+    <div class="comment-body"><div class="comment-head"><span>${u.name}</span><span class="comment-time">${timeAgo(c.ts)}</span></div>${text}</div></div>`;
+}
+function submitComment(taskId){
+  const input = document.getElementById('comment-input');
+  if(!input.value.trim()) return;
+  addComment(taskId, input.value.trim());
+  openTaskDetail(taskId);
+}
+
+/* ================= SUBMIT / APPROVE MODALS ================= */
+function openSubmitModal(taskId){
+  const t = taskById(taskId);
+  document.getElementById('modal-root').innerHTML = `
+    <div class="panel-head"><b>Submit for Approval</b><svg class="close-x" onclick="closeModal()" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></div>
+    <div class="panel-body">
+      <div class="form-row"><label>Final comment (required)</label><textarea id="sub-comment" placeholder="Summarize what you completed…"></textarea></div>
+      <div class="form-row"><label>Proof link type</label>
+        <select id="sub-link-type">${['Instagram','LinkedIn','Facebook','Twitter/X','Google Drive','YouTube','Website'].map(o=>`<option>${o}</option>`).join('')}</select>
+      </div>
+      <div class="form-row"><label>Proof link URL</label><input type="text" id="sub-link-url" placeholder="https://…"></div>
+      <div class="fieldnote" style="margin-bottom:10px">You can add more links or files after submitting, via comments.</div>
+      <button class="btn primary" style="width:100%;justify-content:center" onclick="confirmSubmit('${taskId}')">Submit for Approval</button>
+    </div>`;
+  document.getElementById('modal-overlay').classList.remove('hidden');
+}
+function confirmSubmit(taskId){
+  const comment = document.getElementById('sub-comment').value.trim();
+  if(!comment) return toast('A final comment is required');
+  const url = document.getElementById('sub-link-url').value.trim();
+  const type = document.getElementById('sub-link-type').value;
+  const links = url ? [{type, url}] : [];
+  submitForApproval(taskId, comment, links);
+  closeModal(); closeSlideover(); route();
+}
+function openApproveModal(taskId, approve){
+  document.getElementById('modal-root').innerHTML = `
+    <div class="panel-head"><b>${approve?'Approve Task':'Reject Task'}</b><svg class="close-x" onclick="closeModal()" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></div>
+    <div class="panel-body">
+      <div class="form-row"><label>${approve?'Approval notes (optional)':'Rejection notes (required)'}</label><textarea id="ap-notes" placeholder="${approve?'Nice work…':'What needs to change?'}"></textarea></div>
+      <button class="btn ${approve?'primary':'danger'}" style="width:100%;justify-content:center" onclick="confirmApprove('${taskId}',${approve})">${approve?'Confirm Approval':'Confirm Rejection'}</button>
+    </div>`;
+  document.getElementById('modal-overlay').classList.remove('hidden');
+}
+function confirmApprove(taskId, approve){
+  const notes = document.getElementById('ap-notes').value.trim();
+  if(approve) approveTask(taskId, notes); else { if(!notes) return toast('Rejection notes are required'); rejectTask(taskId, notes); }
+  closeModal(); closeSlideover(); route();
+}
+function closeModal(){ document.getElementById('modal-overlay').classList.add('hidden'); }
+
+/* ================= CREATE / EDIT TASK MODAL ================= */
+function openTaskModal(taskId){
+  const t = taskId ? taskById(taskId) : null;
+  const allUsers = STATE.users.filter(u=>u.active);
+  const assigneeChoices = isAdmin() ? allUsers : allUsers.filter(u=>u.id===STATE.currentUserId);
+  document.getElementById('modal-root').innerHTML = `
+    <div class="panel-head"><b>${t?'Edit Task':'New Task'}</b><svg class="close-x" onclick="closeModal()" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></div>
+    <div class="panel-body">
+      <div class="form-row"><label>Title</label><input type="text" id="f-title" value="${t?t.title.replace(/"/g,'&quot;'):''}" placeholder="e.g. Publish Newsletter"></div>
+      <div class="form-row"><label>Description</label><textarea id="f-desc">${t?t.description:''}</textarea></div>
+      <div class="form-2col">
+        <div class="form-row"><label>Category</label><select id="f-category">${CATEGORIES.map(c=>`<option ${t&&t.category===c?'selected':''}>${c}</option>`).join('')}</select></div>
+        <div class="form-row"><label>Department</label><select id="f-dept">${DEPARTMENTS.map(d=>`<option ${t&&t.department===d?'selected':''}>${d}</option>`).join('')}</select></div>
+      </div>
+      <div class="form-2col">
+        <div class="form-row"><label>Priority</label><select id="f-priority">${['High','Medium','Low'].map(p=>`<option ${t&&t.priority===p?'selected':''}>${p}</option>`).join('')}</select></div>
+        <div class="form-row"><label>Assign to</label><select id="f-assignee" ${isAdmin()?'':'disabled'}>${assigneeChoices.map(u=>`<option value="${u.id}" ${t&&t.assignedTo===u.id?'selected':''}>${u.name}</option>`).join('')}</select>${isAdmin()?'':'<div class="fieldnote">Users can only assign tasks to themselves.</div>'}</div>
+      </div>
+      <div class="form-2col">
+        <div class="form-row"><label>Due date</label><input type="date" id="f-due" value="${t?t.dueDate:isoDate(new Date())}"></div>
+        <div class="form-row"><label>Estimated hours</label><input type="number" id="f-est" value="${t?t.estHours:3}"></div>
+      </div>
+      <div class="form-row"><label>Tags (comma separated)</label><input type="text" id="f-tags" value="${t?t.tags.join(', '):''}"></div>
+
+      <div class="form-row"><label>Checklist / Subtasks</label>
+        <div id="f-checklist">${(t?t.checklist:[]).map(c=>checklistFieldRow(c.text,c.done)).join('')}</div>
+        <button type="button" class="subtle-btn" onclick="addChecklistField()">+ Add subtask</button>
+      </div>
+
+      <div class="form-row">
+        <label><input type="checkbox" id="f-recurring" ${t&&t.recurrence?'checked':''} onchange="document.getElementById('recurrence-box').style.display=this.checked?'block':'none'"> Make this a recurring task</label>
+      </div>
+      <div id="recurrence-box" class="card" style="display:${t&&t.recurrence?'block':'none'};background:var(--surface-2);border-color:transparent;margin-bottom:14px">
+        <div class="form-2col">
+          <div class="form-row"><label>Frequency</label><select id="f-freq">${['daily','weekly','monthly','quarterly','yearly','custom'].map(f=>`<option value="${f}" ${t&&t.recurrence&&t.recurrence.freq===f?'selected':''}>${f[0].toUpperCase()+f.slice(1)}</option>`).join('')}</select></div>
+          <div class="form-row"><label>Repeat every (interval)</label><input type="number" id="f-interval" value="${t&&t.recurrence?t.recurrence.interval:1}"></div>
+        </div>
+        <div class="form-2col">
+          <div class="form-row"><label>End date (optional)</label><input type="date" id="f-recur-end" value="${t&&t.recurrence?t.recurrence.endDate:''}"></div>
+          <div class="form-row"><label>Skip weekends/holidays</label><select id="f-skip"><option value="true" ${t&&t.recurrence&&t.recurrence.skipHolidays?'selected':''}>Yes</option><option value="false" ${t&&t.recurrence&&!t.recurrence.skipHolidays?'selected':''}>No</option></select></div>
+        </div>
+      </div>
+
+      <div class="form-row"><label>Start from template (optional)</label>
+        <select id="f-template" onchange="applyTemplate(this.value)">
+          <option value="">— none —</option>
+          <option value="newsletter">Weekly Newsletter</option>
+          <option value="social">Social Media Post</option>
+          <option value="report">Campaign Report</option>
+        </select>
+      </div>
+
+      <button class="btn primary" style="width:100%;justify-content:center" onclick="saveTaskForm('${t?t.id:''}')">${t?'Save Changes':'Create Task'}</button>
+    </div>`;
+  document.getElementById('modal-overlay').classList.remove('hidden');
+}
+function checklistFieldRow(text,done){
+  return `<div class="checklist-row"><input type="checkbox" class="checkbox" ${done?'checked':''}><input type="text" value="${(text||'').replace(/"/g,'&quot;')}" placeholder="Subtask…"><button type="button" class="subtle-btn" onclick="this.parentElement.remove()">&#10005;</button></div>`;
+}
+function addChecklistField(){ document.getElementById('f-checklist').insertAdjacentHTML('beforeend', checklistFieldRow('',false)); }
+const TEMPLATES = {
+  newsletter:{title:'Publish weekly newsletter', category:'Newsletter', department:'Content', priority:'Medium', checklist:['Draft copy','Design header','QA links','Schedule send']},
+  social:{title:'Create social media post', category:'Social Post', department:'Social Media', priority:'Low', checklist:['Write caption','Design asset','Get approval','Schedule post']},
+  report:{title:'Prepare campaign performance report', category:'Campaign Report', department:'Marketing', priority:'High', checklist:['Pull analytics','Summarize insights','Design slides','Send to client']},
+};
+function applyTemplate(key){
+  if(!key) return;
+  const tpl = TEMPLATES[key];
+  document.getElementById('f-title').value = tpl.title;
+  document.getElementById('f-category').value = tpl.category;
+  document.getElementById('f-dept').value = tpl.department;
+  document.getElementById('f-priority').value = tpl.priority;
+  document.getElementById('f-checklist').innerHTML = tpl.checklist.map(c=>checklistFieldRow(c,false)).join('');
+}
+function saveTaskForm(taskId){
+  const title = document.getElementById('f-title').value.trim();
+  if(!title) return toast('Title is required');
+  const checklist = [...document.getElementById('f-checklist').querySelectorAll('.checklist-row')].map(row=>({
+    id: uid('c'), text: row.querySelector('input[type=text]').value.trim(), done: row.querySelector('input[type=checkbox]').checked
+  })).filter(c=>c.text);
+  const isRecurring = document.getElementById('f-recurring').checked;
+  const recurrence = isRecurring ? {
+    freq: document.getElementById('f-freq').value, interval: +document.getElementById('f-interval').value || 1,
+    startDate: isoDate(new Date()), endDate: document.getElementById('f-recur-end').value,
+    skipHolidays: document.getElementById('f-skip').value==='true', autoAssign:true
+  } : null;
+  const assigneeEl = document.getElementById('f-assignee');
+  const assignedTo = isAdmin() ? assigneeEl.value : STATE.currentUserId;
+  const fields = {
+    title, description: document.getElementById('f-desc').value.trim(),
+    category: document.getElementById('f-category').value, department: document.getElementById('f-dept').value,
+    priority: document.getElementById('f-priority').value, assignedTo,
+    dueDate: document.getElementById('f-due').value, estHours: +document.getElementById('f-est').value || 1,
+    tags: document.getElementById('f-tags').value.split(',').map(s=>s.trim()).filter(Boolean),
+    checklist, recurrence,
+  };
+  if(taskId){
+    const t = taskById(taskId);
+    Object.assign(t, fields);
+    logHistory(t, 'Task Edited', 'Fields updated');
+    toast('Task updated');
+  } else {
+    const t = Object.assign({
+      id: uid('t'), assignedBy: STATE.currentUserId, createdDate: isoDate(new Date()), updatedDate: isoDate(new Date()),
+      status:'Pending', labels:[], attachments:[], proofLinks:[], comments:[], history:[],
+      slaHours: STATE.slaDefaults[fields.priority]||48, submittedAt:null, approvedAt:null, approvedBy:null, approvalNotes:'', rejectionNotes:'',
+    }, fields);
+    t.history.push({ts:new Date().toISOString(), userId:STATE.currentUserId, action:'Task Created', detail:title});
+    STATE.tasks.push(t);
+    if(t.assignedTo !== STATE.currentUserId) notify(t.assignedTo, 'assigned', `${currentUser().name} assigned you "${t.title}".`, t.id);
+    toast('Task created');
+  }
+  saveState(); closeModal(); route();
+}
+
+/* ================= INIT ================= */
+(function init(){
+  ensureTooltip();
+  buildRoleSelect();
+  const vLogin = document.getElementById('version-badge-login'); if(vLogin) vLogin.textContent = 'v' + APP_VERSION;
+  const vSide = document.getElementById('version-badge-sidebar'); if(vSide) vSide.textContent = 'v' + APP_VERSION;
+  document.getElementById('modal-overlay').addEventListener('click', e=>{ if(e.target.id==='modal-overlay') closeModal(); });
+  document.getElementById('task-overlay').addEventListener('click', e=>{ if(e.target.id==='task-overlay') closeSlideover(); });
+  if(!location.hash) location.hash = '#/dashboard';
+})();
+</script>
+</body>
+</html>
