@@ -351,7 +351,11 @@
     </div>
     <div class="form-row"><label>Email</label><input type="email" class="field-input" id="login-email" placeholder="you@company.com" style="width:100%"></div>
     <div class="form-row"><label>Password</label><input type="password" class="field-input" id="login-password" placeholder="••••••••" style="width:100%"></div>
-    <div class="form-row" id="confirm-row" style="display:none"><label>Confirm Password</label><input type="password" class="field-input" id="login-password-confirm" placeholder="••••••••" style="width:100%"></div>
+    <div class="form-row" id="confirm-row" style="display:none">
+      <label>Confirm Password</label>
+      <input type="password" class="field-input" id="login-password-confirm" placeholder="••••••••" style="width:100%">
+      <button type="button" class="subtle-btn" style="margin-top:6px" onclick="resetSignupUI()">Cancel</button>
+    </div>
     <div class="fieldnote" id="login-error" style="color:var(--crit);display:none;margin-bottom:8px"></div>
     <button class="btn primary" id="login-signin-btn" style="width:100%;justify-content:center;margin-bottom:8px" onclick="doSignIn()">Sign in</button>
     <button class="btn" id="login-signup-btn" style="width:100%;justify-content:center;margin-bottom:8px" onclick="onSignUpClick()">First time? Create your account</button>
@@ -443,7 +447,7 @@
 
 <script>
 /* ================= APP VERSION ================= */
-const APP_VERSION = '2.2.0';
+const APP_VERSION = '2.3.0';
 const ICONS = {
   dashboard:'<path d="M4 4h7v9H4zM13 4h7v5h-7zM13 12h7v8h-7zM4 16h7v4H4z"/>',
   tasks:'<path d="M4 6h16M4 12h16M4 18h10"/><circle cx="4" cy="6" r="0"/>',
@@ -513,6 +517,7 @@ function resetSignupUI(){
   document.getElementById('confirm-row').style.display = 'none';
   document.getElementById('login-password-confirm').value = '';
   document.getElementById('login-signup-btn').textContent = 'First time? Create your account';
+  document.getElementById('login-signin-btn').disabled = false;
 }
 async function forgotPassword(){
   hideLoginError();
@@ -549,6 +554,7 @@ function onSignUpClick(){
     confirmRow.style.display = 'block';
     confirmInput.focus();
     document.getElementById('login-signup-btn').textContent = 'Confirm & create account';
+    document.getElementById('login-signin-btn').disabled = true;
     return;
   }
   const confirm = confirmInput.value;
