@@ -351,9 +351,10 @@
     </div>
     <div class="form-row"><label>Email</label><input type="email" class="field-input" id="login-email" placeholder="you@company.com" style="width:100%"></div>
     <div class="form-row"><label>Password</label><input type="password" class="field-input" id="login-password" placeholder="••••••••" style="width:100%"></div>
+    <div class="form-row" id="confirm-row" style="display:none"><label>Confirm Password</label><input type="password" class="field-input" id="login-password-confirm" placeholder="••••••••" style="width:100%"></div>
     <div class="fieldnote" id="login-error" style="color:var(--crit);display:none;margin-bottom:8px"></div>
     <button class="btn primary" id="login-signin-btn" style="width:100%;justify-content:center;margin-bottom:8px" onclick="doSignIn()">Sign in</button>
-    <button class="btn" id="login-signup-btn" style="width:100%;justify-content:center" onclick="doSignUp()">First time? Create your account</button>
+    <button class="btn" id="login-signup-btn" style="width:100%;justify-content:center" onclick="onSignUpClick()">First time? Create your account</button>
     <div class="fieldnote" style="text-align:center;margin-top:16px">Access is limited to approved team emails.</div>
     <div class="fieldnote" style="text-align:center;margin-top:4px" id="version-badge-login"></div>
   </div>
@@ -441,7 +442,7 @@
 
 <script>
 /* ================= APP VERSION ================= */
-const APP_VERSION = '2.0.0';
+const APP_VERSION = '2.1.0';
 const ICONS = {
   dashboard:'<path d="M4 4h7v9H4zM13 4h7v5h-7zM13 12h7v8h-7zM4 16h7v4H4z"/>',
   tasks:'<path d="M4 6h16M4 12h16M4 18h10"/><circle cx="4" cy="6" r="0"/>',
@@ -507,7 +508,13 @@ function friendlyAuthError(e){
   };
   return map[code] || (e && e.message) || 'Something went wrong — please try again.';
 }
+function resetSignupUI(){
+  document.getElementById('confirm-row').style.display = 'none';
+  document.getElementById('login-password-confirm').value = '';
+  document.getElementById('login-signup-btn').textContent = 'First time? Create your account';
+}
 async function doSignIn(){
+  resetSignupUI();
   const email = document.getElementById('login-email').value.trim();
   const password = document.getElementById('login-password').value;
   hideLoginError();
@@ -515,12 +522,34 @@ async function doSignIn(){
   try{ await window.__fb.signInWithEmailAndPassword(window.__fb.auth, email, password); }
   catch(e){ showLoginError(friendlyAuthError(e)); }
 }
+function onSignUpClick(){
+  const confirmRow = document.getElementById('confirm-row');
+  const confirmInput = document.getElementById('login-password-confirm');
+  const email = document.getElementById('login-email').value.trim();
+  const password = document.getElementById('login-password').value;
+  hideLoginError();
+  if(confirmRow.style.display === 'none'){
+    if(!email || !password) return showLoginError('Enter your email and password.');
+    if(password.length < 6) return showLoginError('Password must be at least 6 characters.');
+    if(!APPROVED_ROSTER[email.toLowerCase()]) return showLoginError('This email is not on the approved team list. Contact your admin.');
+    confirmRow.style.display = 'block';
+    confirmInput.focus();
+    document.getElementById('login-signup-btn').textContent = 'Confirm & create account';
+    return;
+  }
+  const confirm = confirmInput.value;
+  if(!confirm) return showLoginError('Please re-enter your password to confirm it.');
+  if(password !== confirm){
+    showLoginError("Passwords don't match — try again.");
+    confirmInput.value = ''; confirmInput.focus();
+    return;
+  }
+  doSignUp();
+}
 async function doSignUp(){
   const email = document.getElementById('login-email').value.trim().toLowerCase();
   const password = document.getElementById('login-password').value;
   hideLoginError();
-  if(!email || !password) return showLoginError('Enter your email and password.');
-  if(password.length < 6) return showLoginError('Password must be at least 6 characters.');
   const roster = APPROVED_ROSTER[email];
   if(!roster) return showLoginError('This email is not on the approved team list. Contact your admin.');
   const {auth, db, doc, setDoc, createUserWithEmailAndPassword, signOut} = window.__fb;
@@ -529,7 +558,7 @@ async function doSignUp(){
     await setDoc(doc(db,'users',cred.user.uid), {
       name: roster.name, email, role: roster.role, department: roster.department, active: true
     });
-  }catch(e){ showLoginError(friendlyAuthError(e)); }
+  }catch(e){ showLoginError(friendlyAuthError(e)); resetSignupUI(); }
 }
 function logout(){ window.__fb.signOut(window.__fb.auth); }
 
