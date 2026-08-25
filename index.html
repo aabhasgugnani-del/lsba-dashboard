@@ -129,10 +129,6 @@
   .search-wrap input:focus{outline:2px solid var(--accent);outline-offset:-1px;}
   .search-wrap .ic{position:absolute;left:9px;top:50%;transform:translateY(-50%);width:14px;height:14px;color:var(--muted);}
   .top-spacer{flex:1;}
-  .roleswitch{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);}
-  .roleswitch select{
-    border:1px solid var(--border);background:var(--surface);color:var(--ink);border-radius:7px;padding:5px 7px;font-size:12px;
-  }
   .btn{
     display:inline-flex;align-items:center;gap:6px;border-radius:8px;border:1px solid var(--border);background:var(--surface);
     color:var(--ink);padding:7px 12px;font-size:12.5px;font-weight:600;cursor:pointer;white-space:nowrap;
@@ -185,10 +181,6 @@
   .kpi-card{display:flex;flex-direction:column;gap:6px;}
   .kpi-top{display:flex;align-items:center;justify-content:space-between;}
   .kpi-value{font-family:var(--font-display);font-size:29px;font-weight:700;line-height:1;}
-  .kpi-delta{font-size:11px;font-weight:700;padding:2px 6px;border-radius:20px;}
-  .kpi-delta.up{color:var(--good);background:var(--good-soft);}
-  .kpi-delta.down{color:var(--crit);background:var(--crit-soft);}
-  .kpi-delta.flat{color:var(--muted);background:var(--surface-2);}
   .kpi-label{font-size:12px;color:var(--muted);font-weight:600;}
   .kpi-spark{margin-top:2px;}
 
@@ -216,7 +208,6 @@
   .pill.pr-Medium{background:var(--warn-soft);color:var(--warn);}
   .pill.pr-Low{background:var(--surface-2);color:var(--muted);}
   .pill.overdue{background:var(--crit-soft);color:var(--crit);}
-  .dot-ind{width:6px;height:6px;border-radius:50%;flex:none;}
   .tag{display:inline-flex;padding:2px 7px;border-radius:6px;background:var(--surface-2);color:var(--ink-soft);font-size:11px;border:1px solid var(--border);}
 
   /* activity feed */
@@ -241,7 +232,6 @@
 
   .toolbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:14px;}
   select,.field-input{border:1px solid var(--border);background:var(--surface);color:var(--ink);border-radius:8px;padding:6.5px 9px;font-size:12.3px;}
-  .toolbar .sep{width:1px;height:20px;background:var(--border);}
   .bulkbar{display:flex;align-items:center;gap:8px;background:var(--accent-soft);border:1px solid var(--accent);border-radius:8px;padding:8px 12px;margin-bottom:10px;font-size:12.3px;color:var(--accent);flex-wrap:wrap;}
 
   /* Kanban */
@@ -274,12 +264,11 @@
   .overlay.center{align-items:center;justify-content:center;}
   .slideover{width:560px;max-width:94vw;background:var(--surface);height:100%;overflow-y:auto;box-shadow:var(--shadow);}
   .modal{width:520px;max-width:92vw;background:var(--surface);border-radius:var(--radius);box-shadow:var(--shadow);max-height:88vh;overflow-y:auto;}
-  .modal.wide{width:640px;}
   .panel-head{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--surface);z-index:5;}
   .panel-body{padding:18px 20px 40px;}
   .form-row{margin-bottom:14px;}
   .form-row label{display:block;font-size:11.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.03em;margin-bottom:5px;}
-  .form-row input[type=text],.form-row input[type=date],.form-row input[type=number],.form-row textarea,.form-row select{
+  .form-row input[type=text],.form-row input[type=email],.form-row input[type=password],.form-row input[type=date],.form-row input[type=number],.form-row textarea,.form-row select{
     width:100%;border:1px solid var(--border);background:var(--paper);color:var(--ink);border-radius:8px;padding:8px 10px;font-size:12.8px;font-family:inherit;
   }
   .form-row select:disabled{opacity:.6;cursor:not-allowed;}
@@ -319,14 +308,6 @@
     radial-gradient(circle at 15% 10%, var(--accent-soft), transparent 45%), var(--paper);padding:20px;}
   .login-card{width:400px;max-width:100%;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:30px 28px;box-shadow:var(--shadow);}
   .login-brand{display:flex;align-items:center;gap:10px;margin-bottom:22px;}
-  .demo-account{display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:9px;background:var(--surface);cursor:pointer;margin-bottom:8px;text-align:left;color:var(--ink);}
-  .demo-account:hover{border-color:var(--accent);background:var(--accent-soft);}
-  .demo-account .role{margin-left:auto;font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;}
-  .divider{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:11px;margin:18px 0;text-transform:uppercase;letter-spacing:.05em;}
-  .divider::before,.divider::after{content:"";flex:1;height:1px;background:var(--border);}
-
-  .progress-track{height:6px;background:var(--surface-2);border-radius:20px;overflow:hidden;}
-  .progress-fill{height:100%;background:var(--accent);border-radius:20px;}
   .fieldnote{font-size:11px;color:var(--muted);margin-top:4px;}
 
   /* ---------- Mobile ---------- */
@@ -339,7 +320,6 @@
     .navcollapse{display:none;}
     .mobile-menu-btn{display:flex;}
     .search-wrap{display:none;}
-    .roleswitch-label{display:none;}
     #topbar{padding:0 12px;gap:8px;}
     .viewtitle{font-size:15px;max-width:130px;overflow:hidden;text-overflow:ellipsis;}
     #view-root{padding:14px 14px 50px;}
@@ -354,7 +334,6 @@
   @media (max-width:520px){
     .grid-kpi{grid-template-columns:repeat(2,1fr)!important;}
     .btn-text-hide{display:none;}
-    .roleswitch{display:none;}
     .view-head h2{font-size:19px;}
   }
 </style>
@@ -370,15 +349,13 @@
         <div class="brand-sub">Task &amp; Content Operations</div>
       </div>
     </div>
-    <div class="form-row"><label>Email</label><input type="text" class="field-input" placeholder="you@company.com" style="width:100%"></div>
-    <div class="form-row"><label>Password</label><input type="text" class="field-input" placeholder="••••••••" style="width:100%"></div>
-    <button class="btn primary" style="width:100%;justify-content:center;margin-bottom:4px" disabled>Sign in</button>
-    <div class="fieldnote">This is a demo — real sign-in is disabled. Use a quick account below.</div>
-    <div class="divider">Quick demo sign-in</div>
-    <button class="demo-account" onclick="loginAs('u1')"><div class="avatar" style="background:var(--cat-1)">AG</div><div><div style="font-weight:700">Aabhas Gugnani</div><div class="fieldnote" style="margin:0">Full org control</div></div><span class="role">Super Admin</span></button>
-    <button class="demo-account" onclick="loginAs('u2')"><div class="avatar" style="background:var(--cat-3)">RI</div><div><div style="font-weight:700">Rishabh</div><div class="fieldnote" style="margin:0">Marketing lead</div></div><span class="role">Admin</span></button>
-    <button class="demo-account" onclick="loginAs('u3')"><div class="avatar" style="background:var(--cat-2)">ST</div><div><div style="font-weight:700">Stuti</div><div class="fieldnote" style="margin:0">Content writer</div></div><span class="role">User</span></button>
-    <div class="fieldnote" style="text-align:center;margin-top:16px" id="version-badge-login"></div>
+    <div class="form-row"><label>Email</label><input type="email" class="field-input" id="login-email" placeholder="you@company.com" style="width:100%"></div>
+    <div class="form-row"><label>Password</label><input type="password" class="field-input" id="login-password" placeholder="••••••••" style="width:100%"></div>
+    <div class="fieldnote" id="login-error" style="color:var(--crit);display:none;margin-bottom:8px"></div>
+    <button class="btn primary" id="login-signin-btn" style="width:100%;justify-content:center;margin-bottom:8px" onclick="doSignIn()">Sign in</button>
+    <button class="btn" id="login-signup-btn" style="width:100%;justify-content:center" onclick="doSignUp()">First time? Create your account</button>
+    <div class="fieldnote" style="text-align:center;margin-top:16px">Access is limited to approved team emails.</div>
+    <div class="fieldnote" style="text-align:center;margin-top:4px" id="version-badge-login"></div>
   </div>
 </div>
 
@@ -408,10 +385,6 @@
         <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14M5 12h14"/></svg>
         <span class="btn-text-hide">New Task</span>
       </button>
-      <div class="roleswitch">
-        <span class="roleswitch-label">Viewing as</span>
-        <select id="role-select" onchange="switchUser(this.value)"></select>
-      </div>
       <div style="position:relative">
         <button class="iconbell" onclick="toggleNotif()" title="Notifications">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg>
@@ -434,12 +407,41 @@
 <div class="overlay hidden" id="task-overlay"><div class="slideover" id="task-slideover"></div></div>
 <div class="overlay center hidden" id="modal-overlay"><div class="modal" id="modal-root"></div></div>
 
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-app.js";
+  import {
+    getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword,
+    signOut, setPersistence, browserLocalPersistence
+  } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-auth.js";
+  import {
+    getFirestore, collection, doc, addDoc, setDoc, updateDoc, deleteDoc, getDoc,
+    onSnapshot, query, where
+  } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    projectId: "lsba-dashboard",
+    appId: "1:1091473656964:web:8eccfc77db6169c6c786d1",
+    storageBucket: "lsba-dashboard.firebasestorage.app",
+    apiKey: "AIzaSyAks9-t7d7IBQMp2PYyMLGotu9Md41qI5M",
+    authDomain: "lsba-dashboard.firebaseapp.com",
+    messagingSenderId: "1091473656964"
+  };
+  const fbApp = initializeApp(firebaseConfig);
+  const auth = getAuth(fbApp);
+  const db = getFirestore(fbApp);
+  setPersistence(auth, browserLocalPersistence).catch(()=>{});
+
+  window.__fb = {
+    auth, db, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut,
+    collection, doc, addDoc, setDoc, updateDoc, deleteDoc, getDoc, onSnapshot, query, where
+  };
+  window.__fbReady = true;
+  window.dispatchEvent(new Event('fbready'));
+</script>
+
 <script>
 /* ================= APP VERSION ================= */
-const APP_VERSION = '1.2.0';
-
-/* ================= STATE / SEED ================= */
-const LS_KEY = 'lsba_dashboard_state_v2';
+const APP_VERSION = '2.0.0';
 const ICONS = {
   dashboard:'<path d="M4 4h7v9H4zM13 4h7v5h-7zM13 12h7v8h-7zM4 16h7v4H4z"/>',
   tasks:'<path d="M4 6h16M4 12h16M4 18h10"/><circle cx="4" cy="6" r="0"/>',
@@ -450,12 +452,20 @@ const ICONS = {
   team:'<circle cx="9" cy="8" r="3"/><path d="M2 20c0-3.3 3.1-6 7-6s7 2.7 7 6"/><circle cx="18" cy="9" r="2.4"/><path d="M15.5 14.3c2.8.4 5 2.5 5 5.2"/>',
   settings:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.34 1.87l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.7 1.7 0 00-1.87-.34 1.7 1.7 0 00-1 1.55V21a2 2 0 01-4 0v-.09a1.7 1.7 0 00-1-1.55 1.7 1.7 0 00-1.87.34l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.7 1.7 0 004.6 15a1.7 1.7 0 00-1.55-1H3a2 2 0 010-4h.09A1.7 1.7 0 004.6 9a1.7 1.7 0 00-.34-1.87l-.06-.06a2 2 0 112.83-2.83l.06.06A1.7 1.7 0 009 4.6a1.7 1.7 0 001-1.55V3a2 2 0 014 0v.09a1.7 1.7 0 001 1.55 1.7 1.7 0 001.87-.34l.06-.06a2 2 0 112.83 2.83l-.06.06A1.7 1.7 0 0019.4 9c.14.36.5 1 1.55 1H21a2 2 0 010 4h-.09a1.7 1.7 0 00-1.51 1z"/>',
 };
-const DEPARTMENTS = ['Content','Design','Social Media','SEO','Email Marketing','Operations','PR'];
+const DEPARTMENTS = ['Content','Design','Social Media','SEO','Email Marketing','Operations','PR','Leadership'];
 const CATEGORIES = ['Newsletter','Social Post','Blog Article','Campaign Report','Banner Design','SEO Audit','Press Release','Client Deliverable'];
-const CAT_COLORS = ['cat-1','cat-2','cat-3','cat-4','cat-5','cat-6'];
+
+const APPROVED_ROSTER = {
+  'rishabh@accubooks.in': {name:'Rishabh', role:'admin', department:'Marketing'},
+  'rahul@accubooks.in': {name:'Rahul', role:'admin', department:'Operations'},
+  'aakriti@naaritive.com': {name:'Aakriti', role:'super_admin', department:'Leadership'},
+  'aabhas@naaritive.com': {name:'Aabhas', role:'super_admin', department:'Leadership'},
+  'mahak@accubooks.in': {name:'Mahak', role:'user', department:'Design'},
+  'batrasaanvi2306@gmail.com': {name:'Saanvi', role:'user', department:'Social Media'},
+};
 
 function uid(p){ return p + '_' + Math.random().toString(36).slice(2,9); }
-function initials(name){ const parts = name.trim().split(/\s+/); return parts.length>1 ? (parts[0][0]+parts[1][0]).toUpperCase() : parts[0].slice(0,2).toUpperCase(); }
+function initials(name){ const parts = (name||'?').trim().split(/\s+/); return parts.length>1 ? (parts[0][0]+parts[1][0]).toUpperCase() : parts[0].slice(0,2).toUpperCase(); }
 function fmtDate(d){ const dt = new Date(d); return dt.toLocaleDateString(undefined,{month:'short',day:'numeric'}); }
 function fmtDateFull(d){ const dt = new Date(d); return dt.toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'}); }
 function fmtDateTime(d){ const dt = new Date(d); return dt.toLocaleDateString(undefined,{month:'short',day:'numeric'}) + ' · ' + dt.toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit'}); }
@@ -469,113 +479,126 @@ function timeAgo(ts){
   if(s<86400) return Math.floor(s/3600)+'h ago';
   return Math.floor(s/86400)+'d ago';
 }
-function userColor(u){ const idx = STATE.users.findIndex(x=>x.id===u.id) % 6; return `var(--cat-${idx+1})`; }
+function userColor(u){ const idx = STATE.users.findIndex(x=>x.id===u.id) % 6; return `var(--cat-${(idx<0?0:idx)+1})`; }
 function userById(id){ return STATE.users.find(u=>u.id===id); }
 function taskById(id){ return STATE.tasks.find(t=>t.id===id); }
 
-function seedState(){
-  const today = new Date();
-  const users = [
-    {id:'u1', name:'Aabhas Gugnani', email:'aabhas.gugnani@gmail.com', role:'super_admin', department:'Leadership', active:true},
-    {id:'u2', name:'Rishabh', email:'rishabh@lsba.co', role:'admin', department:'Marketing', active:true},
-    {id:'u3', name:'Stuti', email:'stuti@lsba.co', role:'user', department:'Content', active:true},
-    {id:'u4', name:'Mahak', email:'mahak@lsba.co', role:'user', department:'Design', active:true},
-    {id:'u5', name:'Saanvi', email:'saanvi@lsba.co', role:'user', department:'Social Media', active:true},
-    {id:'u6', name:'Rahul', email:'rahul@lsba.co', role:'admin', department:'Operations', active:true},
-    {id:'u7', name:'Aakriti', email:'aakriti@lsba.co', role:'admin', department:'SEO', active:true},
-  ];
+/* ================= STATE ================= */
+let STATE = { currentUserId:null, users:[], tasks:[], notifications:[], holidays:[], slaDefaults:{High:24,Medium:48,Low:72} };
 
-  function mk(t){
-    return Object.assign({
-      id: uid('t'),
-      description:'', tags:[], labels:[], checklist:[], attachments:[], proofLinks:[],
-      comments:[], history:[{ts:new Date(t.createdOffset!==undefined?addDays(today,t.createdOffset):today).toISOString(), userId:t.assignedBy||'u2', action:'Task Created', detail:t.title}],
-      recurrence:null, slaHours: t.priority==='High'?24:t.priority==='Medium'?48:72,
-      submittedAt:null, approvedAt:null, approvedBy:null, approvalNotes:'', rejectionNotes:'',
-      createdDate: isoDate(t.createdOffset!==undefined?addDays(today,t.createdOffset):today),
-      updatedDate: isoDate(today),
-      estHours: t.estHours || 3,
-    }, t, {dueDate: isoDate(addDays(today, t.dueOffset))});
-  }
-
-  const tasks = [
-    mk({title:'Publish weekly newsletter — Product Update', category:'Newsletter', department:'Content', priority:'High', assignedTo:'u3', assignedBy:'u2', dueOffset:0, status:'In Progress', createdOffset:-3, tags:['newsletter','q3'], checklist:[{id:uid('c'),text:'Draft copy',done:true},{id:uid('c'),text:'Design header banner',done:true},{id:uid('c'),text:'QA links',done:false},{id:uid('c'),text:'Schedule send',done:false}], recurrence:{freq:'weekly',interval:1,startDate:isoDate(addDays(today,-30)),endDate:'',skipHolidays:true,autoAssign:true}}),
-    mk({title:'Design Instagram carousel — Summer Sale', category:'Social Post', department:'Design', priority:'High', assignedTo:'u4', assignedBy:'u2', dueOffset:0, status:'Submitted', createdOffset:-2, tags:['instagram','sale'], proofLinks:[{type:'Instagram',url:'https://instagram.com/p/demo-summer-sale'}], comments:[{id:uid('cm'),userId:'u4',text:'@Rishabh ready for review, added alt text on all 5 slides.',ts:addDays(today,0).toISOString()}], submittedAt:addDays(today,0).toISOString()}),
-    mk({title:'Write blog article — 10 Content Trends for 2026', category:'Blog Article', department:'Content', priority:'Medium', assignedTo:'u3', assignedBy:'u2', dueOffset:1, status:'Pending', createdOffset:-1, tags:['seo','blog']}),
-    mk({title:'Send Q2 campaign performance report', category:'Campaign Report', department:'Marketing', priority:'High', assignedTo:'u2', assignedBy:'u1', dueOffset:-2, status:'Pending', createdOffset:-6, tags:['report','client']}),
-    mk({title:'Design banner — Homepage hero refresh', category:'Banner Design', department:'Design', priority:'Medium', assignedTo:'u4', assignedBy:'u2', dueOffset:-1, status:'Rejected', createdOffset:-5, rejectionNotes:'Logo lockup is off-brand — please use the 2026 wordmark and resubmit.', comments:[{id:uid('cm'),userId:'u2',text:'Great composition, just swap the logo lockup per brand guide v3.',ts:addDays(today,-1).toISOString()}]}),
-    mk({title:'LinkedIn thought-leadership post — CEO', category:'Social Post', department:'Social Media', priority:'Medium', assignedTo:'u5', assignedBy:'u6', dueOffset:2, status:'Pending', createdOffset:0}),
-    mk({title:'SEO audit — client site lsba-client-04.com', category:'SEO Audit', department:'SEO', priority:'Low', assignedTo:'u3', assignedBy:'u7', dueOffset:5, status:'In Progress', createdOffset:-4}),
-    mk({title:'Press release — Series B announcement', category:'Press Release', department:'PR', priority:'High', assignedTo:'u3', assignedBy:'u1', dueOffset:3, status:'In Progress', createdOffset:-2, checklist:[{id:uid('c'),text:'Legal review',done:false},{id:uid('c'),text:'Exec quotes',done:true}]}),
-    mk({title:'Twitter/X thread — feature launch recap', category:'Social Post', department:'Social Media', priority:'Low', assignedTo:'u5', assignedBy:'u6', dueOffset:0, status:'Approved', createdOffset:-3, submittedAt:addDays(today,-1).toISOString(), approvedAt:addDays(today,-0).toISOString(), approvedBy:'u6', proofLinks:[{type:'Twitter/X',url:'https://x.com/demo/status/000'}]}),
-    mk({title:'Monthly client deliverable — Acme Corp package', category:'Client Deliverable', department:'Operations', priority:'High', assignedTo:'u6', assignedBy:'u1', dueOffset:-3, status:'Completed', createdOffset:-33, submittedAt:addDays(today,-4).toISOString(), approvedAt:addDays(today,-3).toISOString(), approvedBy:'u1'}),
-    mk({title:'Facebook post — customer testimonial', category:'Social Post', department:'Social Media', priority:'Low', assignedTo:'u5', assignedBy:'u6', dueOffset:0, status:'Pending', createdOffset:0, recurrence:{freq:'daily',interval:1,startDate:isoDate(addDays(today,-14)),endDate:'',skipHolidays:false,autoAssign:true}}),
-    mk({title:'YouTube — product walkthrough video edit', category:'Client Deliverable', department:'Design', priority:'Medium', assignedTo:'u4', assignedBy:'u2', dueOffset:4, status:'Pending', createdOffset:-1}),
-    mk({title:'Email drip — onboarding sequence copy', category:'Newsletter', department:'Content', priority:'Medium', assignedTo:'u3', assignedBy:'u2', dueOffset:-1, status:'Submitted', createdOffset:-3, submittedAt:addDays(today,-1).toISOString(), proofLinks:[{type:'Google Drive',url:'https://drive.google.com/demo-onboarding-copy'}]}),
-    mk({title:'Quarterly SEO report — client bundle', category:'Campaign Report', department:'SEO', priority:'Medium', assignedTo:'u5', assignedBy:'u7', dueOffset:6, status:'Pending', createdOffset:0, recurrence:{freq:'quarterly',interval:1,startDate:isoDate(addDays(today,-90)),endDate:'',skipHolidays:false,autoAssign:true}}),
-    mk({title:'Design banner — festive campaign teaser', category:'Banner Design', department:'Design', priority:'High', assignedTo:'u4', assignedBy:'u2', dueOffset:1, status:'In Progress', createdOffset:-1}),
-    mk({title:'Instagram Reels — behind the scenes', category:'Social Post', department:'Social Media', priority:'Low', assignedTo:'u5', assignedBy:'u6', dueOffset:-4, status:'Completed', createdOffset:-10, submittedAt:addDays(today,-5).toISOString(), approvedAt:addDays(today,-4).toISOString(), approvedBy:'u6'}),
-    mk({title:'Blog article — case study: Acme growth', category:'Blog Article', department:'Content', priority:'Medium', assignedTo:'u3', assignedBy:'u2', dueOffset:-5, status:'Completed', createdOffset:-15, submittedAt:addDays(today,-6).toISOString(), approvedAt:addDays(today,-5).toISOString(), approvedBy:'u2'}),
-    mk({title:'Press kit refresh — brand assets', category:'Client Deliverable', department:'Design', priority:'Low', assignedTo:'u4', assignedBy:'u1', dueOffset:8, status:'Pending', createdOffset:0}),
-  ];
-
-  const notifications = [
-    {id:uid('n'), userId:'u2', type:'submitted', text:'Mahak submitted "Design Instagram carousel — Summer Sale" for approval.', taskId: tasks[1].id, ts:addDays(today,0).toISOString(), read:false},
-    {id:uid('n'), userId:'u4', type:'rejected', text:'Your task "Design banner — Homepage hero refresh" needs revisions.', taskId: tasks[4].id, ts:addDays(today,-1).toISOString(), read:false},
-    {id:uid('n'), userId:'u3', type:'due', text:'"Write blog article — 10 Content Trends for 2026" is due tomorrow.', taskId: tasks[2].id, ts:addDays(today,0).toISOString(), read:true},
-    {id:uid('n'), userId:'u2', type:'sla', text:'Approval SLA nearing expiry for "Email drip — onboarding sequence copy".', taskId: tasks[12].id, ts:addDays(today,0).toISOString(), read:false},
-    {id:uid('n'), userId:'u5', type:'approved', text:'Your task "Twitter/X thread — feature launch recap" was approved.', taskId: tasks[8].id, ts:addDays(today,0).toISOString(), read:true},
-    {id:uid('n'), userId:'u1', type:'overdue', text:'"Send Q2 campaign performance report" is overdue by 2 days.', taskId: tasks[3].id, ts:addDays(today,0).toISOString(), read:false},
-  ];
-
-  return {
-    currentUserId:'u1', users, tasks, notifications,
-    holidays:[isoDate(addDays(today,10))],
-    slaDefaults:{High:24,Medium:48,Low:72},
-    seededAt: today.toISOString(),
-  };
-}
-
-let STATE = loadState();
-function loadState(){
-  try{
-    const raw = localStorage.getItem(LS_KEY);
-    if(raw) return JSON.parse(raw);
-  }catch(e){}
-  const s = seedState();
-  localStorage.setItem(LS_KEY, JSON.stringify(s));
-  return s;
-}
-function saveState(){ localStorage.setItem(LS_KEY, JSON.stringify(STATE)); }
-function resetDemo(){
-  if(!confirm('Reset all demo data? This clears every change you made in this browser.')) return;
-  localStorage.removeItem(LS_KEY);
-  STATE = loadState();
-  route();
-  toast('Demo data reset');
-}
-
-/* ================= AUTH / ROLES ================= */
+/* ================= AUTH ================= */
 function currentUser(){ return userById(STATE.currentUserId); }
-function isSuper(){ return currentUser().role==='super_admin'; }
-function isAdmin(){ return currentUser().role==='admin' || isSuper(); }
+function isSuper(){ const u=currentUser(); return !!u && u.role==='super_admin'; }
+function isAdmin(){ const u=currentUser(); return !!u && (u.role==='admin' || u.role==='super_admin'); }
 
-function loginAs(uid_){
-  STATE.currentUserId = uid_; saveState();
+function showLoginError(msg){ const el=document.getElementById('login-error'); el.textContent=msg; el.style.display='block'; }
+function hideLoginError(){ const el=document.getElementById('login-error'); el.style.display='none'; }
+function friendlyAuthError(e){
+  const code = (e && e.code) || '';
+  const map = {
+    'auth/invalid-credential':'Incorrect email or password.',
+    'auth/wrong-password':'Incorrect email or password.',
+    'auth/user-not-found':'No account found for that email — try "Create your account".',
+    'auth/email-already-in-use':'An account already exists for that email — try Sign in instead.',
+    'auth/weak-password':'Password must be at least 6 characters.',
+    'auth/invalid-email':'That email address looks invalid.',
+    'auth/too-many-requests':'Too many attempts — please wait a bit and try again.',
+    'permission-denied':'This email is not on the approved team list. Contact your admin.',
+  };
+  return map[code] || (e && e.message) || 'Something went wrong — please try again.';
+}
+async function doSignIn(){
+  const email = document.getElementById('login-email').value.trim();
+  const password = document.getElementById('login-password').value;
+  hideLoginError();
+  if(!email || !password) return showLoginError('Enter your email and password.');
+  try{ await window.__fb.signInWithEmailAndPassword(window.__fb.auth, email, password); }
+  catch(e){ showLoginError(friendlyAuthError(e)); }
+}
+async function doSignUp(){
+  const email = document.getElementById('login-email').value.trim().toLowerCase();
+  const password = document.getElementById('login-password').value;
+  hideLoginError();
+  if(!email || !password) return showLoginError('Enter your email and password.');
+  if(password.length < 6) return showLoginError('Password must be at least 6 characters.');
+  const roster = APPROVED_ROSTER[email];
+  if(!roster) return showLoginError('This email is not on the approved team list. Contact your admin.');
+  const {auth, db, doc, setDoc, createUserWithEmailAndPassword, signOut} = window.__fb;
+  try{
+    const cred = await createUserWithEmailAndPassword(auth, email, password);
+    await setDoc(doc(db,'users',cred.user.uid), {
+      name: roster.name, email, role: roster.role, department: roster.department, active: true
+    });
+  }catch(e){ showLoginError(friendlyAuthError(e)); }
+}
+function logout(){ window.__fb.signOut(window.__fb.auth); }
+
+async function safeGetProfile(uidVal){
+  try{
+    const {db, doc, getDoc} = window.__fb;
+    const snap = await getDoc(doc(db,'users',uidVal));
+    return snap.exists() ? snap : null;
+  }catch(e){ return null; }
+}
+async function onAuthChanged(user){
+  if(!user){
+    if(unsubUsers) unsubUsers(); if(unsubTasks) unsubTasks(); if(unsubNotifs) unsubNotifs(); if(unsubMeta) unsubMeta();
+    document.getElementById('app').classList.add('hidden');
+    document.getElementById('login-view').classList.remove('hidden');
+    return;
+  }
+  let profileSnap = await safeGetProfile(user.uid);
+  if(!profileSnap){ await new Promise(r=>setTimeout(r,900)); profileSnap = await safeGetProfile(user.uid); }
+  if(!profileSnap){
+    showLoginError('Your account exists but has no profile yet. If you just signed up, please wait a moment and refresh.');
+    return;
+  }
+  STATE.currentUserId = user.uid;
+  subscribeAll(user.uid);
   document.getElementById('login-view').classList.add('hidden');
   document.getElementById('app').classList.remove('hidden');
-  buildRoleSelect(); buildNav();
-  location.hash = '#/dashboard';
+  buildNav();
+  if(!location.hash) location.hash = '#/dashboard';
   route();
 }
-function switchUser(id){ STATE.currentUserId = id; saveState(); buildNav(); renderTopUser(); route(); }
-function logout(){ document.getElementById('app').classList.add('hidden'); document.getElementById('login-view').classList.remove('hidden'); }
 
-function buildRoleSelect(){
-  const sel = document.getElementById('role-select');
-  sel.innerHTML = STATE.users.filter(u=>u.active).map(u=>`<option value="${u.id}" ${u.id===STATE.currentUserId?'selected':''}>${u.name} — ${roleLabel(u.role)}</option>`).join('');
+/* ================= FIRESTORE SUBSCRIPTIONS ================= */
+let unsubUsers=null, unsubTasks=null, unsubNotifs=null, unsubMeta=null;
+function appVisible(){ return !document.getElementById('app').classList.contains('hidden'); }
+function subscribeAll(uidVal){
+  const {db, collection, doc, onSnapshot, query, where} = window.__fb;
+  if(unsubUsers) unsubUsers();
+  if(unsubTasks) unsubTasks();
+  if(unsubNotifs) unsubNotifs();
+  if(unsubMeta) unsubMeta();
+
+  unsubUsers = onSnapshot(collection(db,'users'), snap=>{
+    STATE.users = snap.docs.map(d=>({id:d.id, ...d.data()}));
+    if(appVisible()) route();
+  }, err=>console.error('users listener', err));
+
+  unsubTasks = onSnapshot(collection(db,'tasks'), snap=>{
+    STATE.tasks = snap.docs.map(d=>({id:d.id, ...d.data()}));
+    if(appVisible()) route();
+  }, err=>console.error('tasks listener', err));
+
+  unsubNotifs = onSnapshot(query(collection(db,'notifications'), where('userId','==',uidVal)), snap=>{
+    STATE.notifications = snap.docs.map(d=>({id:d.id, ...d.data()}));
+    if(appVisible()) renderTopUser();
+  }, err=>console.error('notifications listener', err));
+
+  unsubMeta = onSnapshot(doc(db,'meta','config'), snap=>{
+    const d = snap.exists() ? snap.data() : {};
+    STATE.holidays = d.holidays || [];
+    STATE.slaDefaults = d.slaDefaults || {High:24,Medium:48,Low:72};
+    if(appVisible() && location.hash.replace('#/','')==='settings') renderSettings();
+  }, err=>console.error('meta listener', err));
 }
-function roleLabel(r){ return r==='super_admin'?'Super Admin':r==='admin'?'Admin':'User'; }
+async function saveMeta(){
+  const {db, doc, setDoc} = window.__fb;
+  try{ await setDoc(doc(db,'meta','config'), {holidays: STATE.holidays, slaDefaults: STATE.slaDefaults}, {merge:true}); }
+  catch(e){ toast('Could not save settings: '+(e.message||'permission denied')); }
+}
 
 /* ================= NAV / ROUTER ================= */
 const NAV_ITEMS = [
@@ -589,7 +612,8 @@ const NAV_ITEMS = [
   {id:'settings', label:'Settings', icon:'settings', roles:['super_admin']},
 ];
 function buildNav(){
-  const role = currentUser().role;
+  const u = currentUser(); if(!u) return;
+  const role = u.role;
   const html = NAV_ITEMS.filter(n=>n.roles.includes(role)).map(n=>{
     const badge = n.id==='tasks' ? myOpenTaskCount() : (n.id==='reports' && isAdmin() ? pendingApprovalCount() : 0);
     return `<div class="navitem" data-route="${n.id}" onclick="location.hash='#/${n.id}'">
@@ -598,7 +622,6 @@ function buildNav(){
       ${badge?`<span class="badge">${badge}</span>`:''}
     </div>`;
   }).join('') + `<div class="navsection">Session</div>
-    <div class="navitem" onclick="resetDemo()"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M3 12a9 9 0 109-9 9.7 9.7 0 00-7 3L3 8"/><path d="M3 3v5h5"/></svg><span class="navlabel">Reset Demo Data</span></div>
     <div class="navitem" onclick="logout()"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg><span class="navlabel">Log out</span></div>`;
   document.getElementById('nav-container').innerHTML = html;
 }
@@ -613,12 +636,14 @@ function closeMobileSidebar(){
 }
 
 function myOpenTaskCount(){
-  const uid_ = STATE.currentUserId;
-  return STATE.tasks.filter(t=>t.assignedTo===uid_ && !['Completed','Approved'].includes(t.status)).length;
+  const uidVal = STATE.currentUserId;
+  return STATE.tasks.filter(t=>t.assignedTo===uidVal && !['Completed','Approved'].includes(t.status)).length;
 }
 function pendingApprovalCount(){ return STATE.tasks.filter(t=>t.status==='Submitted').length; }
+function roleLabel(r){ return r==='super_admin'?'Super Admin':r==='admin'?'Admin':'User'; }
 
 function route(){
+  if(!currentUser()) return;
   const hash = location.hash.replace('#/','') || 'dashboard';
   document.querySelectorAll('.navitem[data-route]').forEach(el=>el.classList.toggle('active', el.dataset.route===hash));
   const titles = {dashboard:'Dashboard', tasks:'Tasks', kanban:'Kanban Board', calendar:'Calendar', reports:'Reports & Analytics', activity:'Activity Log', team:'Team & Users', settings:'Settings'};
@@ -632,11 +657,10 @@ function route(){
 window.addEventListener('hashchange', route);
 
 function renderTopUser(){
-  const u = currentUser();
+  const u = currentUser(); if(!u) return;
   const av = document.getElementById('current-avatar');
   av.textContent = initials(u.name); av.style.background = userColor(u);
-  buildRoleSelect();
-  const unread = STATE.notifications.filter(n=>n.userId===u.id && !n.read).length;
+  const unread = STATE.notifications.filter(n=>!n.read).length;
   document.getElementById('notif-dot').style.display = unread ? 'block' : 'none';
 }
 
@@ -653,7 +677,7 @@ function toggleNotif(){
   const opening = panel.classList.contains('hidden');
   panel.classList.toggle('hidden');
   if(opening){
-    const mine = STATE.notifications.filter(n=>n.userId===STATE.currentUserId).sort((a,b)=>new Date(b.ts)-new Date(a.ts));
+    const mine = STATE.notifications.slice().sort((a,b)=>new Date(b.ts)-new Date(a.ts));
     document.getElementById('notif-list').innerHTML = mine.length ? mine.map(n=>`
       <div class="notif-item ${n.read?'read':'unread'}" onclick="openNotif('${n.id}')">
         <div class="notif-dot"></div>
@@ -661,33 +685,38 @@ function toggleNotif(){
       </div>`).join('') : `<div class="empty">No notifications yet</div>`;
   }
 }
-function openNotif(id){
+async function openNotif(id){
   const n = STATE.notifications.find(x=>x.id===id);
-  n.read = true; saveState();
+  const {db, doc, updateDoc} = window.__fb;
+  try{ await updateDoc(doc(db,'notifications',id), {read:true}); }catch(e){}
   document.getElementById('notif-panel').classList.add('hidden');
-  renderTopUser();
-  if(n.taskId && taskById(n.taskId)) openTaskDetail(n.taskId);
+  if(n && n.taskId && taskById(n.taskId)) openTaskDetail(n.taskId);
 }
-function markAllRead(){
-  STATE.notifications.forEach(n=>{ if(n.userId===STATE.currentUserId) n.read=true; });
-  saveState(); renderTopUser(); toggleNotif(); toggleNotif();
+async function markAllRead(){
+  const {db, doc, updateDoc} = window.__fb;
+  const unread = STATE.notifications.filter(n=>!n.read);
+  for(const n of unread){ try{ await updateDoc(doc(db,'notifications',n.id), {read:true}); }catch(e){} }
+  toggleNotif(); toggleNotif();
 }
-function notify(userId, type, text, taskId){
-  STATE.notifications.unshift({id:uid('n'), userId, type, text, taskId, ts:new Date().toISOString(), read:false});
+async function notify(userId, type, text, taskId){
+  const {db, collection, addDoc} = window.__fb;
+  try{ await addDoc(collection(db,'notifications'), {userId, type, text, taskId: taskId||null, ts:new Date().toISOString(), read:false}); }
+  catch(e){ console.error('notify failed', e); }
 }
 document.addEventListener('click', (e)=>{
   const panel = document.getElementById('notif-panel');
-  if(!panel.classList.contains('hidden') && !panel.contains(e.target) && !e.target.closest('.iconbell')) panel.classList.add('hidden');
+  if(panel && !panel.classList.contains('hidden') && !panel.contains(e.target) && !e.target.closest('.iconbell')) panel.classList.add('hidden');
 });
 
 /* ================= HISTORY / ACTIVITY ================= */
 function logHistory(task, action, detail){
+  task.history = task.history || [];
   task.history.push({ts:new Date().toISOString(), userId:STATE.currentUserId, action, detail:detail||''});
   task.updatedDate = isoDate(new Date());
 }
 function allActivity(){
   const rows = [];
-  STATE.tasks.forEach(t=> t.history.forEach(h=> rows.push({...h, taskId:t.id, taskTitle:t.title})));
+  STATE.tasks.forEach(t=> (t.history||[]).forEach(h=> rows.push({...h, taskId:t.id, taskTitle:t.title})));
   return rows.sort((a,b)=>new Date(b.ts)-new Date(a.ts));
 }
 
@@ -817,82 +846,104 @@ function isWeekendOrHoliday(d){
   const iso = isoDate(d);
   return day===0 || day===6 || STATE.holidays.includes(iso);
 }
-function maybeSpawnRecurring(task){
+async function maybeSpawnRecurring(task){
   if(!task.recurrence) return;
   const rec = task.recurrence;
   const next = nextDueDate(task.dueDate, rec);
   if(rec.endDate && new Date(next) > new Date(rec.endDate)) return;
   const clone = JSON.parse(JSON.stringify(task));
-  clone.id = uid('t');
+  delete clone.id;
   clone.status = 'Pending';
   clone.dueDate = isoDate(next);
   clone.createdDate = isoDate(new Date());
   clone.updatedDate = clone.createdDate;
   clone.submittedAt=null; clone.approvedAt=null; clone.approvedBy=null; clone.approvalNotes=''; clone.rejectionNotes='';
   clone.comments = []; clone.proofLinks = []; clone.attachments = [];
-  clone.checklist = clone.checklist.map(c=>({...c, done:false}));
+  clone.checklist = (clone.checklist||[]).map(c=>({...c, done:false}));
   clone.history = [{ts:new Date().toISOString(), userId:STATE.currentUserId, action:'Recurring Task Created', detail:'Auto-generated from completed occurrence'}];
-  STATE.tasks.push(clone);
-  notify(clone.assignedTo, 'recurring', `New recurring task assigned: "${clone.title}" (due ${fmtDate(clone.dueDate)}).`, clone.id);
-  toast('Next recurring occurrence created: due ' + fmtDate(clone.dueDate));
+  const {db, collection, addDoc} = window.__fb;
+  try{
+    const ref = await addDoc(collection(db,'tasks'), clone);
+    await notify(clone.assignedTo, 'recurring', `New recurring task assigned: "${clone.title}" (due ${fmtDate(clone.dueDate)}).`, ref.id);
+    toast('Next recurring occurrence created: due ' + fmtDate(clone.dueDate));
+  }catch(e){ console.error('recurring spawn failed', e); }
 }
 
 /* ================= TASK MUTATIONS ================= */
-function setStatus(task, status, extra){
+async function setStatus(task, status, extra){
   const prev = task.status;
   task.status = status;
   Object.assign(task, extra||{});
   logHistory(task, 'Status Changed', `${prev} → ${status}`);
-  if(status==='Completed' && prev!=='Completed'){ maybeSpawnRecurring(task); }
-  saveState();
+  const {db, doc, updateDoc} = window.__fb;
+  try{
+    await updateDoc(doc(db,'tasks',task.id), {status:task.status, ...(extra||{}), history:task.history, updatedDate:task.updatedDate});
+  }catch(e){ toast('Update failed: '+(e.message||'permission denied')); return; }
+  if(status==='Completed' && prev!=='Completed'){ await maybeSpawnRecurring(task); }
 }
-function submitForApproval(taskId, comment, links){
+async function submitForApproval(taskId, comment, links){
   const t = taskById(taskId);
+  t.comments = t.comments||[]; t.proofLinks = t.proofLinks||[];
   t.comments.push({id:uid('cm'), userId:STATE.currentUserId, text:comment, ts:new Date().toISOString()});
   t.proofLinks.push(...links);
-  setStatus(t, 'Submitted', {submittedAt:new Date().toISOString()});
-  notify(t.assignedBy, 'submitted', `${currentUser().name} submitted "${t.title}" for approval.`, t.id);
+  const {db, doc, updateDoc} = window.__fb;
+  try{ await updateDoc(doc(db,'tasks',t.id), {comments:t.comments, proofLinks:t.proofLinks}); }
+  catch(e){ toast('Submit failed: '+(e.message||'permission denied')); return; }
+  await setStatus(t, 'Submitted', {submittedAt:new Date().toISOString()});
+  await notify(t.assignedBy, 'submitted', `${currentUser().name} submitted "${t.title}" for approval.`, t.id);
   toast('Submitted for approval');
 }
-function approveTask(taskId, notes){
+async function approveTask(taskId, notes){
   const t = taskById(taskId);
-  setStatus(t, 'Approved', {approvedAt:new Date().toISOString(), approvedBy:STATE.currentUserId, approvalNotes:notes||''});
-  notify(t.assignedTo, 'approved', `Your task "${t.title}" was approved.`, t.id);
-  setTimeout(()=>{ setStatus(t,'Completed'); saveState(); }, 10);
+  await setStatus(t, 'Approved', {approvedAt:new Date().toISOString(), approvedBy:STATE.currentUserId, approvalNotes:notes||''});
+  await notify(t.assignedTo, 'approved', `Your task "${t.title}" was approved.`, t.id);
+  setTimeout(()=>{ setStatus(t,'Completed', {}); }, 10);
   toast('Task approved');
 }
-function rejectTask(taskId, notes){
+async function rejectTask(taskId, notes){
   const t = taskById(taskId);
-  setStatus(t, 'Rejected', {rejectionNotes:notes});
-  notify(t.assignedTo, 'rejected', `Your task "${t.title}" needs revisions.`, t.id);
+  await setStatus(t, 'Rejected', {rejectionNotes:notes});
+  await notify(t.assignedTo, 'rejected', `Your task "${t.title}" needs revisions.`, t.id);
   toast('Sent back for revisions');
 }
-function addComment(taskId, text){
+async function addComment(taskId, text){
   const t = taskById(taskId);
+  t.comments = t.comments||[];
   t.comments.push({id:uid('cm'), userId:STATE.currentUserId, text, ts:new Date().toISOString()});
   logHistory(t,'Comment Added', text.slice(0,60));
+  const {db, doc, updateDoc} = window.__fb;
+  try{ await updateDoc(doc(db,'tasks',t.id), {comments:t.comments, history:t.history}); }
+  catch(e){ toast('Comment failed: '+(e.message||'permission denied')); return; }
   const mention = text.match(/@([A-Za-z ]+)/);
   if(mention){
     const u = STATE.users.find(u=>u.name.toLowerCase().startsWith(mention[1].trim().toLowerCase()));
-    if(u) notify(u.id,'mention', `${currentUser().name} mentioned you on "${t.title}".`, t.id);
+    if(u) await notify(u.id,'mention', `${currentUser().name} mentioned you on "${t.title}".`, t.id);
   }
-  saveState();
 }
-function toggleChecklist(taskId, itemId){
+async function toggleChecklist(taskId, itemId){
   const t = taskById(taskId); const item = t.checklist.find(c=>c.id===itemId);
-  item.done = !item.done; logHistory(t,'Checklist Updated', item.text); saveState();
+  item.done = !item.done; logHistory(t,'Checklist Updated', item.text);
+  const {db, doc, updateDoc} = window.__fb;
+  try{ await updateDoc(doc(db,'tasks',t.id), {checklist:t.checklist, history:t.history}); }
+  catch(e){ toast('Update failed'); item.done = !item.done; }
 }
-function deleteTask(taskId){
+async function deleteTask(taskId){
   if(!confirm('Delete this task? It will be removed from all views.')) return;
-  STATE.tasks = STATE.tasks.filter(t=>t.id!==taskId);
-  saveState(); closeSlideover(); route(); toast('Task deleted');
+  const {db, doc, deleteDoc} = window.__fb;
+  try{ await deleteDoc(doc(db,'tasks',taskId)); }
+  catch(e){ toast('Delete failed: '+(e.message||'permission denied')); return; }
+  closeSlideover(); toast('Task deleted');
 }
-function duplicateTask(taskId){
+async function duplicateTask(taskId){
   const t = taskById(taskId);
   const clone = JSON.parse(JSON.stringify(t));
-  clone.id = uid('t'); clone.title = t.title + ' (copy)'; clone.status='Pending';
-  clone.createdDate = isoDate(new Date()); clone.comments=[]; clone.history=[{ts:new Date().toISOString(),userId:STATE.currentUserId,action:'Task Created',detail:'Duplicated from '+t.title}];
-  STATE.tasks.push(clone); saveState(); route(); toast('Task duplicated');
+  delete clone.id;
+  clone.title = t.title + ' (copy)'; clone.status='Pending';
+  clone.createdDate = isoDate(new Date()); clone.updatedDate = clone.createdDate;
+  clone.comments=[]; clone.history=[{ts:new Date().toISOString(),userId:STATE.currentUserId,action:'Task Created',detail:'Duplicated from '+t.title}];
+  const {db, collection, addDoc} = window.__fb;
+  try{ await addDoc(collection(db,'tasks'), clone); toast('Task duplicated'); }
+  catch(e){ toast('Duplicate failed: '+(e.message||'permission denied')); }
 }
 
 /* ================= FILTER STATE ================= */
@@ -905,7 +956,7 @@ function visibleTasks(){
   if(role==='user') list = list.filter(t=>t.assignedTo===STATE.currentUserId);
   if(FILTERS.q){
     const q = FILTERS.q.toLowerCase();
-    list = list.filter(t=> t.title.toLowerCase().includes(q) || t.tags.join(' ').toLowerCase().includes(q) || userById(t.assignedTo).name.toLowerCase().includes(q) || t.category.toLowerCase().includes(q));
+    list = list.filter(t=> t.title.toLowerCase().includes(q) || (t.tags||[]).join(' ').toLowerCase().includes(q) || (userById(t.assignedTo)||{name:''}).name.toLowerCase().includes(q) || t.category.toLowerCase().includes(q));
   }
   if(FILTERS.status) list = list.filter(t=>t.status===FILTERS.status);
   if(FILTERS.priority) list = list.filter(t=>t.priority===FILTERS.priority);
@@ -929,18 +980,16 @@ function computeKPIs(){
   const total = tasks.length;
   const byStatus = s => tasks.filter(t=>t.status===s).length;
   const overdue = tasks.filter(t=> new Date(t.dueDate) < new Date(today) && !['Completed','Approved'].includes(t.status)).length;
-  const recurring = tasks.filter(t=>t.recurrence).length;
   const completed = byStatus('Completed');
   const rate = total ? Math.round((completed/total)*100) : 0;
   const approvedTasks = tasks.filter(t=>t.approvedAt && t.submittedAt);
   const avgApproval = approvedTasks.length ? Math.round(approvedTasks.reduce((a,t)=>a+Math.max(0,daysBetween(t.submittedAt,t.approvedAt)*24 + 6),0)/approvedTasks.length) : 0;
   const avgCompletion = completed ? Math.round(tasks.filter(t=>t.status==='Completed').reduce((a,t)=>a+Math.max(1,daysBetween(t.createdDate,t.updatedDate)),0)/completed) : 0;
   const dueThisWeek = tasks.filter(t=> daysBetween(today,t.dueDate)>=0 && daysBetween(today,t.dueDate)<=7 && !['Completed'].includes(t.status)).length;
-  const pendingApproval = byStatus('Submitted');
   const overduePct = total ? Math.round((overdue/total)*100) : 0;
   const slaOk = approvedTasks.filter(t=>t.submittedAt && (new Date(t.approvedAt)-new Date(t.submittedAt))/3600000 <= (t.slaHours||48)).length;
   const slaPerf = approvedTasks.length ? Math.round((slaOk/approvedTasks.length)*100) : 100;
-  return {total, byStatus, overdue, recurring, completed, rate, avgApproval, avgCompletion, dueThisWeek, pendingApproval, overduePct, slaPerf};
+  return {total, byStatus, overdue, completed, rate, avgApproval, avgCompletion, dueThisWeek, overduePct, slaPerf};
 }
 
 function kpiCard(label, value, sub, spark){
@@ -955,17 +1004,22 @@ function kpiCard(label, value, sub, spark){
 function adminDashboardHTML(){
   const k = computeKPIs();
   const tasks = STATE.tasks;
+  if(!tasks.length){
+    return `<div class="view-head"><div><h2>Welcome, ${currentUser().name}</h2><p>${fmtDateFull(new Date())}</p></div>
+      <div class="head-actions"><button class="btn primary" onclick="openTaskModal()">+ New Task</button></div></div>
+      <div class="card empty">No tasks yet — create the first one to get your team started.</div>`;
+  }
   const statusOrder = ['Pending','In Progress','Submitted','Approved','Rejected','Completed'];
   const statusColors = {'Pending':'var(--muted)','In Progress':'var(--info)','Submitted':'var(--warn)','Approved':'var(--good)','Rejected':'var(--crit)','Completed':'var(--accent)'};
   const byStatusData = statusOrder.map(s=>({label:s.replace('In Progress','In Prog.').replace('Submitted','Subm.'), value:tasks.filter(t=>t.status===s).length, color:statusColors[s]}));
 
-  const byUser = STATE.users.filter(u=>u.role!=='super_admin' || tasks.some(t=>t.assignedTo===u.id)).map((u,i)=>({label:u.name.split(' ')[0], value:tasks.filter(t=>t.assignedTo===u.id).length, color:`var(--cat-${(i%6)+1})`})).filter(d=>d.value>0);
+  const byUser = STATE.users.map((u,i)=>({label:u.name.split(' ')[0], value:tasks.filter(t=>t.assignedTo===u.id).length, color:`var(--cat-${(i%6)+1})`})).filter(d=>d.value>0);
 
   const months = [-5,-4,-3,-2,-1,0].map(off=>{
     const d = new Date(); d.setMonth(d.getMonth()+off);
     const label = d.toLocaleDateString(undefined,{month:'short'});
-    const count = tasks.filter(t=>t.status==='Completed' && new Date(t.updatedDate).getMonth()===d.getMonth()).length + Math.max(0, 3+off*2);
-    return {label, value: Math.max(1,count)};
+    const count = tasks.filter(t=>t.status==='Completed' && new Date(t.updatedDate).getMonth()===d.getMonth()).length;
+    return {label, value: Math.max(0,count)};
   });
 
   const catCounts = {};
@@ -1022,7 +1076,7 @@ function adminDashboardHTML(){
     </div>
     <div class="card chart-card">
       <div class="chart-head"><div><div class="card-title">Tasks by User</div></div></div>
-      ${barChart(byUser, {horizontal:true, height:Math.max(120, byUser.length*30)})}
+      ${byUser.length? barChart(byUser, {horizontal:true, height:Math.max(120, byUser.length*30)}) : '<div class="empty">No assignments yet</div>'}
     </div>
     <div class="card chart-card">
       <div class="chart-head"><div><div class="card-title">Category-wise Tasks</div></div></div>
@@ -1041,7 +1095,7 @@ function adminDashboardHTML(){
   <div class="grid grid-2">
     <div class="card">
       <div class="card-title" style="margin-bottom:10px">Team Performance — Completion %</div>
-      ${barChart(teamPerf, {horizontal:true, height:Math.max(120,teamPerf.length*32)})}
+      ${teamPerf.length? barChart(teamPerf, {horizontal:true, height:Math.max(120,teamPerf.length*32)}) : '<div class="empty">No users yet</div>'}
     </div>
     <div class="card">
       <div class="card-title" style="margin-bottom:8px">Recent Activity</div>
@@ -1073,7 +1127,7 @@ function userDashboardHTML(){
 
   const months = [-5,-4,-3,-2,-1,0].map(off=>{
     const d = new Date(); d.setMonth(d.getMonth()+off);
-    return {label:d.toLocaleDateString(undefined,{month:'short'}), value: Math.max(1, mine.filter(t=>t.status==='Completed' && new Date(t.updatedDate).getMonth()===d.getMonth()).length + (off===0?1:2))};
+    return {label:d.toLocaleDateString(undefined,{month:'short'}), value: mine.filter(t=>t.status==='Completed' && new Date(t.updatedDate).getMonth()===d.getMonth()).length};
   });
   const pendingVsCompleted = [{label:'Completed', value: mine.filter(t=>t.status==='Completed').length, color:'var(--good)'},{label:'Open', value: mine.filter(t=>t.status!=='Completed').length, color:'var(--muted)'}];
 
@@ -1163,7 +1217,7 @@ function renderTasks(){
   </div>`;
 }
 function taskRowHTML(t){
-  const u = userById(t.assignedTo);
+  const u = userById(t.assignedTo) || {name:'Unknown'};
   return `<tr class="taskrow">
     <td onclick="event.stopPropagation()"><input type="checkbox" class="checkbox" ${SELECTED_TASKS.has(t.id)?'checked':''} onchange="toggleSelectTask('${t.id}',this.checked)"></td>
     <td class="titlecell" onclick="openTaskDetail('${t.id}')">${t.title}${t.recurrence?' <span class="tag">recurring</span>':''}<span class="id">${t.id}</span></td>
@@ -1191,39 +1245,57 @@ function bulkBarHTML(){
     <button class="btn sm ghost" onclick="SELECTED_TASKS.clear();renderTasks()">Clear</button>
   </div>`;
 }
-function bulkChangePriority(){
+async function bulkChangePriority(){
   const p = prompt('Set priority for selected tasks (High / Medium / Low):','High');
   if(!p || !['High','Medium','Low'].includes(p)) return;
-  SELECTED_TASKS.forEach(id=>{ const t=taskById(id); t.priority=p; logHistory(t,'Priority Changed',p); });
-  saveState(); renderTasks(); toast('Priority updated for '+SELECTED_TASKS.size+' tasks');
+  const {db, doc, updateDoc} = window.__fb;
+  for(const id of SELECTED_TASKS){
+    const t=taskById(id); if(!t) continue;
+    t.priority=p; logHistory(t,'Priority Changed',p);
+    try{ await updateDoc(doc(db,'tasks',id), {priority:p, history:t.history}); }catch(e){}
+  }
+  renderTasks(); toast('Priority updated for '+SELECTED_TASKS.size+' tasks');
 }
-function bulkChangeDue(){
+async function bulkChangeDue(){
   const d = prompt('New due date (YYYY-MM-DD):', isoDate(new Date()));
   if(!d) return;
-  SELECTED_TASKS.forEach(id=>{ const t=taskById(id); t.dueDate=d; logHistory(t,'Due Date Changed',d); });
-  saveState(); renderTasks(); toast('Due date updated');
+  const {db, doc, updateDoc} = window.__fb;
+  for(const id of SELECTED_TASKS){
+    const t=taskById(id); if(!t) continue;
+    t.dueDate=d; logHistory(t,'Due Date Changed',d);
+    try{ await updateDoc(doc(db,'tasks',id), {dueDate:d, history:t.history}); }catch(e){}
+  }
+  renderTasks(); toast('Due date updated');
 }
-function bulkAssign(){
+async function bulkAssign(){
   const names = STATE.users.map(u=>u.name).join(', ');
   const name = prompt('Reassign selected tasks to (type full name):\n'+names);
-  const u = STATE.users.find(u=>u.name.toLowerCase()===  (name||'').toLowerCase());
+  const u = STATE.users.find(u=>u.name.toLowerCase()===(name||'').toLowerCase());
   if(!u) return toast('User not found');
-  SELECTED_TASKS.forEach(id=>{ const t=taskById(id); t.assignedTo=u.id; logHistory(t,'Reassigned',u.name); notify(u.id,'assigned',`You were assigned "${t.title}".`,t.id); });
-  saveState(); renderTasks(); toast('Reassigned to '+u.name);
+  const {db, doc, updateDoc} = window.__fb;
+  for(const id of SELECTED_TASKS){
+    const t=taskById(id); if(!t) continue;
+    t.assignedTo=u.id; logHistory(t,'Reassigned',u.name);
+    try{ await updateDoc(doc(db,'tasks',id), {assignedTo:u.id, history:t.history}); await notify(u.id,'assigned',`You were assigned "${t.title}".`,t.id); }catch(e){}
+  }
+  renderTasks(); toast('Reassigned to '+u.name);
 }
-function bulkApprove(){
-  SELECTED_TASKS.forEach(id=>{ const t=taskById(id); if(t.status==='Submitted') approveTask(id,'Bulk approved'); });
+async function bulkApprove(){
+  for(const id of [...SELECTED_TASKS]){
+    const t=taskById(id); if(t && t.status==='Submitted') await approveTask(id,'Bulk approved');
+  }
   SELECTED_TASKS.clear(); renderTasks(); toast('Submitted tasks approved');
 }
-function bulkDelete(){
+async function bulkDelete(){
   if(!confirm('Delete '+SELECTED_TASKS.size+' tasks?')) return;
-  STATE.tasks = STATE.tasks.filter(t=>!SELECTED_TASKS.has(t.id));
-  SELECTED_TASKS.clear(); saveState(); renderTasks(); toast('Deleted');
+  const {db, doc, deleteDoc} = window.__fb;
+  for(const id of SELECTED_TASKS){ try{ await deleteDoc(doc(db,'tasks',id)); }catch(e){} }
+  SELECTED_TASKS.clear(); renderTasks(); toast('Deleted');
 }
 function exportCSV(list){
   const cols = ['id','title','category','department','priority','assignedTo','status','dueDate','createdDate'];
   const rows = [cols.join(',')].concat(list.map(t=>cols.map(c=>{
-    let v = c==='assignedTo' ? userById(t.assignedTo).name : t[c];
+    let v = c==='assignedTo' ? (userById(t.assignedTo)||{name:''}).name : t[c];
     v = String(v??'').replace(/"/g,'""');
     return /[,"\n]/.test(v) ? `"${v}"` : v;
   }).join(',')));
@@ -1248,7 +1320,7 @@ function renderKanban(){
     }).join('')}</div>`;
 }
 function kcardHTML(t){
-  const u = userById(t.assignedTo);
+  const u = userById(t.assignedTo) || {name:'Unknown'};
   return `<div class="kcard" draggable="true" data-id="${t.id}" ondragstart="onKanbanDragStart(event)" ondragend="this.classList.remove('dragging')" onclick="openTaskDetail('${t.id}')">
     <div class="kcard-title">${t.title}</div>
     <div class="kcard-meta">
@@ -1262,14 +1334,14 @@ function kcardHTML(t){
   </div>`;
 }
 function onKanbanDragStart(e){ e.dataTransfer.setData('text/plain', e.target.dataset.id); e.target.classList.add('dragging'); }
-function onKanbanDrop(e, col){
+async function onKanbanDrop(e, col){
   e.preventDefault(); e.currentTarget.classList.remove('dragover');
   const id = e.dataTransfer.getData('text/plain');
   const t = taskById(id);
   if(!t) return;
   if(col==='Submitted' && t.status!=='Submitted'){ openSubmitModal(id); return; }
   if(col==='Approved' && !isAdmin()){ toast('Only Admins can approve tasks'); return; }
-  setStatus(t, col, col==='Submitted'?{submittedAt:new Date().toISOString()}:col==='Approved'?{approvedAt:new Date().toISOString(),approvedBy:STATE.currentUserId}:{});
+  await setStatus(t, col, col==='Submitted'?{submittedAt:new Date().toISOString()}:col==='Approved'?{approvedAt:new Date().toISOString(),approvedBy:STATE.currentUserId}:{});
   renderKanban();
 }
 
@@ -1335,7 +1407,7 @@ function renderReports(){
       ${kpiCard('Tasks Due This Week', k.dueThisWeek)}
     </div>
     <div class="grid grid-2" style="margin-bottom:14px">
-      <div class="card"><div class="card-title" style="margin-bottom:8px">Department Performance (completion %)</div>${barChart(deptPerf,{horizontal:true,height:Math.max(120,deptPerf.length*32)})}</div>
+      <div class="card"><div class="card-title" style="margin-bottom:8px">Department Performance (completion %)</div>${deptPerf.length?barChart(deptPerf,{horizontal:true,height:Math.max(120,deptPerf.length*32)}):'<div class="empty">No data yet</div>'}</div>
       <div class="card"><div class="card-title" style="margin-bottom:8px">Approval Turnaround Leaderboard</div>${teamLeaderboardHTML()}</div>
     </div>
     <div class="card">
@@ -1351,6 +1423,7 @@ function teamLeaderboardHTML(){
     const rejected = t.filter(x=>x.status==='Rejected').length;
     return {u, total:t.length, done, rejected, score: t.length? Math.round(done/t.length*100):0};
   }).sort((a,b)=>b.score-a.score);
+  if(!rows.length) return '<div class="empty">No users yet</div>';
   return `<div class="table-wrap"><table><thead><tr><th>#</th><th>User</th><th>Tasks</th><th>Completed</th><th>Rejected</th><th>Score</th></tr></thead><tbody>
     ${rows.map((r,i)=>`<tr><td>${i+1}</td><td><div class="userchip"><div class="avatar" style="background:${userColor(r.u)}">${initials(r.u.name)}</div>${r.u.name}</div></td><td class="num">${r.total}</td><td class="num">${r.done}</td><td class="num">${r.rejected}</td><td class="num"><b>${r.score}%</b></td></tr>`).join('')}
   </tbody></table></div>`;
@@ -1367,8 +1440,8 @@ function renderActivityView(){
 /* ================= TEAM & USERS ================= */
 function renderTeam(){
   const root = document.getElementById('view-root');
-  root.innerHTML = `<div class="view-head"><div><h2>Team &amp; Users</h2><p>${STATE.users.filter(u=>u.active).length} active members</p></div>
-    <div class="head-actions"><button class="btn primary" onclick="inviteUser()">+ Invite user</button></div></div>
+  root.innerHTML = `<div class="view-head"><div><h2>Team &amp; Users</h2><p>${STATE.users.filter(u=>u.active).length} active members</p></div></div>
+    <div class="card" style="margin-bottom:14px"><p class="card-sub">New teammates join by opening this app and using "Create your account" with their approved company email — no manual invite needed. To add someone new to the roster, update the approved list in Settings &rarr; Firestore rules.</p></div>
     <div class="card" style="padding:0"><div class="table-wrap"><table><thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Department</th><th>Open Tasks</th><th>Status</th><th></th></tr></thead><tbody>
     ${STATE.users.map(u=>{
       const open = STATE.tasks.filter(t=>t.assignedTo===u.id && !['Completed'].includes(t.status)).length;
@@ -1384,14 +1457,17 @@ function renderTeam(){
     }).join('')}
     </tbody></table></div></div>`;
 }
-function changeRole(id, role){ const u = userById(id); u.role=role; saveState(); renderTeam(); toast(u.name+' is now '+roleLabel(role)); }
-function toggleActive(id){ const u = userById(id); u.active=!u.active; saveState(); renderTeam(); buildRoleSelect(); toast(u.name+' '+(u.active?'activated':'deactivated')); }
-function inviteUser(){
-  const name = prompt('Full name:'); if(!name) return;
-  const email = prompt('Email:', name.toLowerCase().replace(' ','.')+'@lsba.co') || '';
-  const dept = prompt('Department:\n'+DEPARTMENTS.join(', '), 'Content') || 'Content';
-  const u = {id:uid('u'), name, email, role:'user', department:dept, active:true};
-  STATE.users.push(u); saveState(); renderTeam(); buildRoleSelect(); toast('Invited '+name+' (demo — no email sent)');
+async function changeRole(id, role){
+  const {db, doc, updateDoc} = window.__fb;
+  const u = userById(id);
+  try{ await updateDoc(doc(db,'users',id), {role}); toast(u.name+' is now '+roleLabel(role)); }
+  catch(e){ toast('Could not change role: '+(e.message||'permission denied')); }
+}
+async function toggleActive(id){
+  const {db, doc, updateDoc} = window.__fb;
+  const u = userById(id);
+  try{ await updateDoc(doc(db,'users',id), {active: !u.active}); toast(u.name+' '+(!u.active?'activated':'deactivated')); }
+  catch(e){ toast('Could not update: '+(e.message||'permission denied')); }
 }
 
 /* ================= SETTINGS ================= */
@@ -1401,13 +1477,13 @@ function renderSettings(){
   <div class="grid grid-2">
     <div class="card">
       <div class="card-title" style="margin-bottom:10px">Approval SLA (hours)</div>
-      ${['High','Medium','Low'].map(p=>`<div class="form-row"><label>${p} priority</label><input type="number" class="field-input" value="${STATE.slaDefaults[p]}" onchange="STATE.slaDefaults['${p}']=+this.value;saveState();toast('SLA updated')"></div>`).join('')}
+      ${['High','Medium','Low'].map(p=>`<div class="form-row"><label>${p} priority</label><input type="number" class="field-input" value="${STATE.slaDefaults[p]}" onchange="updateSla('${p}', this.value)"></div>`).join('')}
     </div>
     <div class="card">
       <div class="card-title" style="margin-bottom:10px">Integrations</div>
       <div class="form-row"><label>Email notifications</label><select><option>Enabled</option><option>Disabled</option></select></div>
-      <div class="form-row"><label>Slack integration</label><select onchange="toast('Demo mode — connect via a real workspace in production')"><option>Not connected</option><option>Connect Slack…</option></select></div>
-      <div class="form-row"><label>Microsoft Teams integration</label><select onchange="toast('Demo mode — connect via a real tenant in production')"><option>Not connected</option><option>Connect Teams…</option></select></div>
+      <div class="form-row"><label>Slack integration</label><select onchange="toast('Not connected yet — connect a real workspace to enable')"><option>Not connected</option><option>Connect Slack…</option></select></div>
+      <div class="form-row"><label>Microsoft Teams integration</label><select onchange="toast('Not connected yet — connect a real tenant to enable')"><option>Not connected</option><option>Connect Teams…</option></select></div>
     </div>
     <div class="card">
       <div class="card-title" style="margin-bottom:10px">Holidays (skipped by recurring tasks)</div>
@@ -1416,18 +1492,23 @@ function renderSettings(){
     </div>
     <div class="card">
       <div class="card-title" style="margin-bottom:10px">About</div>
-      <p class="card-sub" style="margin-bottom:10px">LSBA Dashboard prototype, version <b class="num">${APP_VERSION}</b>.</p>
-      <p class="card-sub" style="margin-bottom:10px">Reset all demo data stored in this browser.</p>
-      <button class="btn danger" onclick="resetDemo()">Reset Demo Data</button>
+      <p class="card-sub" style="margin-bottom:6px">LSBA Dashboard, version <b class="num">${APP_VERSION}</b>.</p>
+      <p class="card-sub">Signed in as ${currentUser().name} (${roleLabel(currentUser().role)}). Data is synced live via Firebase for everyone on the approved roster.</p>
     </div>
   </div>`;
 }
-function addHoliday(){ const v = document.getElementById('new-holiday').value; if(!v) return; STATE.holidays.push(v); saveState(); renderSettings(); }
-function removeHoliday(h){ STATE.holidays = STATE.holidays.filter(x=>x!==h); saveState(); renderSettings(); }
+function updateSla(p, val){ STATE.slaDefaults[p] = +val; saveMeta(); toast('SLA updated'); }
+async function addHoliday(){
+  const v = document.getElementById('new-holiday').value; if(!v) return;
+  STATE.holidays.push(v); await saveMeta(); renderSettings();
+}
+async function removeHoliday(h){
+  STATE.holidays = STATE.holidays.filter(x=>x!==h); await saveMeta(); renderSettings();
+}
 
 /* ================= TASK DETAIL SLIDEOVER ================= */
 function openTaskDetail(id){
-  const t = taskById(id);
+  const t = taskById(id); if(!t) return;
   const overlay = document.getElementById('task-overlay');
   document.getElementById('task-slideover').innerHTML = taskDetailHTML(t);
   overlay.classList.remove('hidden');
@@ -1445,10 +1526,16 @@ function slaBadge(t){
 }
 
 function taskDetailHTML(t){
-  const assignee = userById(t.assignedTo), assigner = userById(t.assignedBy);
+  const assignee = userById(t.assignedTo) || {name:'Unknown'}, assigner = userById(t.assignedBy) || {name:'Unknown'};
   const canApprove = isAdmin() && t.status==='Submitted';
   const isMine = t.assignedTo===STATE.currentUserId;
-  const checklistDone = t.checklist.filter(c=>c.done).length;
+  const checklist = t.checklist || [];
+  const checklistDone = checklist.filter(c=>c.done).length;
+  const comments = t.comments || [];
+  const proofLinks = t.proofLinks || [];
+  const attachments = t.attachments || [];
+  const history = t.history || [];
+  const tags = t.tags || [];
   return `
   <div class="panel-head">
     <div style="display:flex;align-items:center;gap:8px">${pill(t.status,'status',t.status)}${pill(t.priority,'pr')}${slaBadge(t)}</div>
@@ -1478,17 +1565,17 @@ function taskDetailHTML(t){
       <div class="card-sub">Every ${t.recurrence.interval} ${t.recurrence.freq==='custom'?'days':t.recurrence.freq.replace('ly','')}(s) · ${t.recurrence.skipHolidays?'skips weekends/holidays':'no skip'} · ${t.recurrence.endDate?'ends '+fmtDate(t.recurrence.endDate):'no end date'}</div>
     </div>` : ''}
 
-    ${t.tags.length ? `<div style="margin-bottom:10px">${t.tags.map(tag=>`<span class="tag">#${tag}</span> `).join('')}</div>` : ''}
+    ${tags.length ? `<div style="margin-bottom:10px">${tags.map(tag=>`<span class="tag">#${tag}</span> `).join('')}</div>` : ''}
 
-    <div class="section-title">Checklist ${t.checklist.length?`(${checklistDone}/${t.checklist.length})`:''}</div>
-    ${t.checklist.length? t.checklist.map(c=>`<div class="checklist-row ${c.done?'done':''}"><input type="checkbox" class="checkbox" ${c.done?'checked':''} onchange="toggleChecklist('${t.id}','${c.id}');openTaskDetail('${t.id}')"><span style="flex:1">${c.text}</span></div>`).join('') : '<div class="card-sub">No subtasks</div>'}
+    <div class="section-title">Checklist ${checklist.length?`(${checklistDone}/${checklist.length})`:''}</div>
+    ${checklist.length? checklist.map(c=>`<div class="checklist-row ${c.done?'done':''}"><input type="checkbox" class="checkbox" ${c.done?'checked':''} onchange="toggleChecklist('${t.id}','${c.id}');openTaskDetail('${t.id}')"><span style="flex:1">${c.text}</span></div>`).join('') : '<div class="card-sub">No subtasks</div>'}
 
     <div class="section-title">Proof of Completion</div>
-    ${t.proofLinks.length? t.proofLinks.map(l=>`<div class="proof-link"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007 0l3-3a5 5 0 00-7-7l-1.5 1.5"/><path d="M14 11a5 5 0 00-7 0l-3 3a5 5 0 007 7l1.5-1.5"/></svg><a href="${l.url}" target="_blank" rel="noopener noreferrer">${l.type}: ${l.url}</a></div>`).join('') : '<div class="card-sub">No proof submitted yet</div>'}
-    ${t.attachments.length? `<div style="margin-top:6px">${t.attachments.map(a=>`<span class="att-chip">&#128206; ${a.name}</span>`).join('')}</div>`:''}
+    ${proofLinks.length? proofLinks.map(l=>`<div class="proof-link"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007 0l3-3a5 5 0 00-7-7l-1.5 1.5"/><path d="M14 11a5 5 0 00-7 0l-3 3a5 5 0 007 7l1.5-1.5"/></svg><a href="${l.url}" target="_blank" rel="noopener noreferrer">${l.type}: ${l.url}</a></div>`).join('') : '<div class="card-sub">No proof submitted yet</div>'}
+    ${attachments.length? `<div style="margin-top:6px">${attachments.map(a=>`<span class="att-chip">&#128206; ${a.name}</span>`).join('')}</div>`:''}
 
     ${t.status==='Rejected' && t.rejectionNotes ? `<div class="card" style="background:var(--crit-soft);border-color:transparent;margin:10px 0"><b style="font-size:12px;color:var(--crit)">Rejection notes</b><div class="card-sub" style="color:var(--crit)">${t.rejectionNotes}</div></div>` : ''}
-    ${t.status==='Approved'||t.status==='Completed' ? `<div class="card" style="background:var(--good-soft);border-color:transparent;margin:10px 0"><b style="font-size:12px;color:var(--good)">Approved by ${t.approvedBy?userById(t.approvedBy).name:''} · ${t.approvedAt?fmtDateTime(t.approvedAt):''}</b>${t.approvalNotes?`<div class="card-sub" style="color:var(--good)">${t.approvalNotes}</div>`:''}</div>` : ''}
+    ${t.status==='Approved'||t.status==='Completed' ? `<div class="card" style="background:var(--good-soft);border-color:transparent;margin:10px 0"><b style="font-size:12px;color:var(--good)">Approved by ${t.approvedBy && userById(t.approvedBy) ? userById(t.approvedBy).name : ''} · ${t.approvedAt?fmtDateTime(t.approvedAt):''}</b>${t.approvalNotes?`<div class="card-sub" style="color:var(--good)">${t.approvalNotes}</div>`:''}</div>` : ''}
 
     <div style="display:flex;gap:8px;margin:14px 0;flex-wrap:wrap">
       ${isMine && !['Submitted','Approved','Completed'].includes(t.status) ? `<button class="btn primary" onclick="openSubmitModal('${t.id}')">Submit for Approval</button>` : ''}
@@ -1497,18 +1584,18 @@ function taskDetailHTML(t){
     </div>
 
     <div class="section-title">Comments</div>
-    ${t.comments.length? t.comments.map(c=>commentHTML(c)).join('') : '<div class="card-sub" style="margin-bottom:10px">No comments yet</div>'}
+    ${comments.length? comments.map(c=>commentHTML(c)).join('') : '<div class="card-sub" style="margin-bottom:10px">No comments yet</div>'}
     <div style="display:flex;gap:8px;margin-top:6px">
       <input type="text" id="comment-input" class="field-input" placeholder="Add a comment — use @Name to mention" style="flex:1">
       <button class="btn" onclick="submitComment('${t.id}')">Post</button>
     </div>
 
     <div class="section-title">Version History &amp; Audit Trail</div>
-    ${t.history.slice().reverse().map(h=>`<div class="history-row"><span class="mono card-sub">${fmtDateTime(h.ts)}</span><span><b>${userById(h.userId)?userById(h.userId).name:'System'}</b> — ${h.action}${h.detail?': '+h.detail:''}</span></div>`).join('')}
+    ${history.slice().reverse().map(h=>`<div class="history-row"><span class="mono card-sub">${fmtDateTime(h.ts)}</span><span><b>${userById(h.userId)?userById(h.userId).name:'System'}</b> — ${h.action}${h.detail?': '+h.detail:''}</span></div>`).join('')}
   </div>`;
 }
 function commentHTML(c){
-  const u = userById(c.userId);
+  const u = userById(c.userId) || {id:'?', name:'Unknown'};
   const text = c.text.replace(/@([A-Za-z ]+)/g,'<span class="mention">@$1</span>');
   return `<div class="comment"><div class="avatar" style="background:${userColor(u)}">${initials(u.name)}</div>
     <div class="comment-body"><div class="comment-head"><span>${u.name}</span><span class="comment-time">${timeAgo(c.ts)}</span></div>${text}</div></div>`;
@@ -1516,13 +1603,11 @@ function commentHTML(c){
 function submitComment(taskId){
   const input = document.getElementById('comment-input');
   if(!input.value.trim()) return;
-  addComment(taskId, input.value.trim());
-  openTaskDetail(taskId);
+  addComment(taskId, input.value.trim()).then(()=> openTaskDetail(taskId));
 }
 
 /* ================= SUBMIT / APPROVE MODALS ================= */
 function openSubmitModal(taskId){
-  const t = taskById(taskId);
   document.getElementById('modal-root').innerHTML = `
     <div class="panel-head"><b>Submit for Approval</b><svg class="close-x" onclick="closeModal()" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></div>
     <div class="panel-body">
@@ -1536,13 +1621,13 @@ function openSubmitModal(taskId){
     </div>`;
   document.getElementById('modal-overlay').classList.remove('hidden');
 }
-function confirmSubmit(taskId){
+async function confirmSubmit(taskId){
   const comment = document.getElementById('sub-comment').value.trim();
   if(!comment) return toast('A final comment is required');
   const url = document.getElementById('sub-link-url').value.trim();
   const type = document.getElementById('sub-link-type').value;
   const links = url ? [{type, url}] : [];
-  submitForApproval(taskId, comment, links);
+  await submitForApproval(taskId, comment, links);
   closeModal(); closeSlideover(); route();
 }
 function openApproveModal(taskId, approve){
@@ -1554,9 +1639,9 @@ function openApproveModal(taskId, approve){
     </div>`;
   document.getElementById('modal-overlay').classList.remove('hidden');
 }
-function confirmApprove(taskId, approve){
+async function confirmApprove(taskId, approve){
   const notes = document.getElementById('ap-notes').value.trim();
-  if(approve) approveTask(taskId, notes); else { if(!notes) return toast('Rejection notes are required'); rejectTask(taskId, notes); }
+  if(approve) await approveTask(taskId, notes); else { if(!notes) return toast('Rejection notes are required'); await rejectTask(taskId, notes); }
   closeModal(); closeSlideover(); route();
 }
 function closeModal(){ document.getElementById('modal-overlay').classList.add('hidden'); }
@@ -1570,7 +1655,7 @@ function openTaskModal(taskId){
     <div class="panel-head"><b>${t?'Edit Task':'New Task'}</b><svg class="close-x" onclick="closeModal()" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></div>
     <div class="panel-body">
       <div class="form-row"><label>Title</label><input type="text" id="f-title" value="${t?t.title.replace(/"/g,'&quot;'):''}" placeholder="e.g. Publish Newsletter"></div>
-      <div class="form-row"><label>Description</label><textarea id="f-desc">${t?t.description:''}</textarea></div>
+      <div class="form-row"><label>Description</label><textarea id="f-desc">${t?(t.description||''):''}</textarea></div>
       <div class="form-2col">
         <div class="form-row"><label>Category</label><select id="f-category">${CATEGORIES.map(c=>`<option ${t&&t.category===c?'selected':''}>${c}</option>`).join('')}</select></div>
         <div class="form-row"><label>Department</label><select id="f-dept">${DEPARTMENTS.map(d=>`<option ${t&&t.department===d?'selected':''}>${d}</option>`).join('')}</select></div>
@@ -1583,10 +1668,10 @@ function openTaskModal(taskId){
         <div class="form-row"><label>Due date</label><input type="date" id="f-due" value="${t?t.dueDate:isoDate(new Date())}"></div>
         <div class="form-row"><label>Estimated hours</label><input type="number" id="f-est" value="${t?t.estHours:3}"></div>
       </div>
-      <div class="form-row"><label>Tags (comma separated)</label><input type="text" id="f-tags" value="${t?t.tags.join(', '):''}"></div>
+      <div class="form-row"><label>Tags (comma separated)</label><input type="text" id="f-tags" value="${t?(t.tags||[]).join(', '):''}"></div>
 
       <div class="form-row"><label>Checklist / Subtasks</label>
-        <div id="f-checklist">${(t?t.checklist:[]).map(c=>checklistFieldRow(c.text,c.done)).join('')}</div>
+        <div id="f-checklist">${(t?(t.checklist||[]):[]).map(c=>checklistFieldRow(c.text,c.done)).join('')}</div>
         <button type="button" class="subtle-btn" onclick="addChecklistField()">+ Add subtask</button>
       </div>
 
@@ -1635,7 +1720,7 @@ function applyTemplate(key){
   document.getElementById('f-priority').value = tpl.priority;
   document.getElementById('f-checklist').innerHTML = tpl.checklist.map(c=>checklistFieldRow(c,false)).join('');
 }
-function saveTaskForm(taskId){
+async function saveTaskForm(taskId){
   const title = document.getElementById('f-title').value.trim();
   if(!title) return toast('Title is required');
   const checklist = [...document.getElementById('f-checklist').querySelectorAll('.checklist-row')].map(row=>({
@@ -1657,35 +1742,42 @@ function saveTaskForm(taskId){
     tags: document.getElementById('f-tags').value.split(',').map(s=>s.trim()).filter(Boolean),
     checklist, recurrence,
   };
+  const {db, doc, collection, addDoc, updateDoc} = window.__fb;
   if(taskId){
     const t = taskById(taskId);
     Object.assign(t, fields);
     logHistory(t, 'Task Edited', 'Fields updated');
-    toast('Task updated');
+    try{ await updateDoc(doc(db,'tasks',taskId), {...fields, history:t.history, updatedDate:t.updatedDate}); toast('Task updated'); }
+    catch(e){ toast('Update failed: '+(e.message||'permission denied')); return; }
   } else {
     const t = Object.assign({
-      id: uid('t'), assignedBy: STATE.currentUserId, createdDate: isoDate(new Date()), updatedDate: isoDate(new Date()),
+      assignedBy: STATE.currentUserId, createdDate: isoDate(new Date()), updatedDate: isoDate(new Date()),
       status:'Pending', labels:[], attachments:[], proofLinks:[], comments:[], history:[],
       slaHours: STATE.slaDefaults[fields.priority]||48, submittedAt:null, approvedAt:null, approvedBy:null, approvalNotes:'', rejectionNotes:'',
     }, fields);
     t.history.push({ts:new Date().toISOString(), userId:STATE.currentUserId, action:'Task Created', detail:title});
-    STATE.tasks.push(t);
-    if(t.assignedTo !== STATE.currentUserId) notify(t.assignedTo, 'assigned', `${currentUser().name} assigned you "${t.title}".`, t.id);
-    toast('Task created');
+    try{
+      const ref = await addDoc(collection(db,'tasks'), t);
+      if(t.assignedTo !== STATE.currentUserId) await notify(t.assignedTo, 'assigned', `${currentUser().name} assigned you "${t.title}".`, ref.id);
+      toast('Task created');
+    }catch(e){ toast('Create failed: '+(e.message||'permission denied')); return; }
   }
-  saveState(); closeModal(); route();
+  closeModal(); route();
 }
 
 /* ================= INIT ================= */
-(function init(){
+function whenFirebaseReady(cb){
+  if(window.__fbReady) cb(); else window.addEventListener('fbready', cb, {once:true});
+}
+function startApp(){
   ensureTooltip();
-  buildRoleSelect();
   const vLogin = document.getElementById('version-badge-login'); if(vLogin) vLogin.textContent = 'v' + APP_VERSION;
   const vSide = document.getElementById('version-badge-sidebar'); if(vSide) vSide.textContent = 'v' + APP_VERSION;
   document.getElementById('modal-overlay').addEventListener('click', e=>{ if(e.target.id==='modal-overlay') closeModal(); });
   document.getElementById('task-overlay').addEventListener('click', e=>{ if(e.target.id==='task-overlay') closeSlideover(); });
-  if(!location.hash) location.hash = '#/dashboard';
-})();
+  window.__fb.onAuthStateChanged(window.__fb.auth, onAuthChanged);
+}
+whenFirebaseReady(startApp);
 </script>
 </body>
 </html>
