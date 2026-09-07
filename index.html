@@ -447,7 +447,7 @@
 
 <script>
 /* ================= APP VERSION ================= */
-const APP_VERSION = '2.3.0';
+const APP_VERSION = '2.3.1';
 const ICONS = {
   dashboard:'<path d="M4 4h7v9H4zM13 4h7v5h-7zM13 12h7v8h-7zM4 16h7v4H4z"/>',
   tasks:'<path d="M4 6h16M4 12h16M4 18h10"/><circle cx="4" cy="6" r="0"/>',
@@ -1269,7 +1269,7 @@ function taskRowHTML(t){
   const u = userById(t.assignedTo) || {name:'Unknown'};
   return `<tr class="taskrow">
     <td onclick="event.stopPropagation()"><input type="checkbox" class="checkbox" ${SELECTED_TASKS.has(t.id)?'checked':''} onchange="toggleSelectTask('${t.id}',this.checked)"></td>
-    <td class="titlecell" onclick="openTaskDetail('${t.id}')">${t.title}${t.recurrence?' <span class="tag">recurring</span>':''}<span class="id">${t.id}</span></td>
+    <td class="titlecell" onclick="openTaskDetail('${t.id}')">${t.title}${t.recurrence?' <span class="tag">recurring</span>':''}</td>
     <td onclick="openTaskDetail('${t.id}')"><div class="userchip"><div class="avatar" style="background:${userColor(u)}">${initials(u.name)}</div>${u.name.split(' ')[0]}</div></td>
     <td onclick="openTaskDetail('${t.id}')">${t.category}</td>
     <td onclick="openTaskDetail('${t.id}')">${pill(t.priority,'pr')}</td>
