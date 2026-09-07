@@ -4,7 +4,7 @@ service cloud.firestore {
 
     function signedIn() { return request.auth != null; }
     function myDoc() { return get(/databases/$(database)/documents/users/$(request.auth.uid)); }
-    function myRole() { return signedIn() && myDoc().data.role; }
+    function myRole() { return myDoc().data.role; }
     function isAdmin() { return signedIn() && myRole() in ['admin', 'super_admin']; }
     function isSuper() { return signedIn() && myRole() == 'super_admin'; }
 
