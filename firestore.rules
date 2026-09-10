@@ -18,7 +18,8 @@ service cloud.firestore {
         'aakriti@naaritive.com': 'super_admin',
         'aabhas@naaritive.com': 'super_admin',
         'mahak@accubooks.in': 'user',
-        'batrasaanvi2306@gmail.com': 'user'
+        'batrasaanvi2306@gmail.com': 'user',
+        'stutisaini3@gmail.com': 'user'
       }[email];
     }
 
