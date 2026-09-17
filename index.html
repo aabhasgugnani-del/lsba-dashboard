@@ -423,6 +423,9 @@
     getFirestore, collection, doc, addDoc, setDoc, updateDoc, deleteDoc, getDoc,
     onSnapshot, query, where
   } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js";
+  import {
+    getStorage, ref, uploadBytes, getDownloadURL
+  } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-storage.js";
 
   const firebaseConfig = {
     projectId: "lsba-dashboard",
@@ -435,11 +438,13 @@
   const fbApp = initializeApp(firebaseConfig);
   const auth = getAuth(fbApp);
   const db = getFirestore(fbApp);
+  const storage = getStorage(fbApp);
   setPersistence(auth, browserLocalPersistence).catch(()=>{});
 
   window.__fb = {
-    auth, db, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, sendPasswordResetEmail,
-    collection, doc, addDoc, setDoc, updateDoc, deleteDoc, getDoc, onSnapshot, query, where
+    auth, db, storage, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, sendPasswordResetEmail,
+    collection, doc, addDoc, setDoc, updateDoc, deleteDoc, getDoc, onSnapshot, query, where,
+    ref, uploadBytes, getDownloadURL
   };
   window.__fbReady = true;
   window.dispatchEvent(new Event('fbready'));
@@ -447,7 +452,7 @@
 
 <script>
 /* ================= APP VERSION ================= */
-const APP_VERSION = '2.3.3';
+const APP_VERSION = '2.4.0';
 const ICONS = {
   dashboard:'<path d="M4 4h7v9H4zM13 4h7v5h-7zM13 12h7v8h-7zM4 16h7v4H4z"/>',
   tasks:'<path d="M4 6h16M4 12h16M4 18h10"/><circle cx="4" cy="6" r="0"/>',
@@ -458,8 +463,8 @@ const ICONS = {
   team:'<circle cx="9" cy="8" r="3"/><path d="M2 20c0-3.3 3.1-6 7-6s7 2.7 7 6"/><circle cx="18" cy="9" r="2.4"/><path d="M15.5 14.3c2.8.4 5 2.5 5 5.2"/>',
   settings:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.34 1.87l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.7 1.7 0 00-1.87-.34 1.7 1.7 0 00-1 1.55V21a2 2 0 01-4 0v-.09a1.7 1.7 0 00-1-1.55 1.7 1.7 0 00-1.87.34l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.7 1.7 0 004.6 15a1.7 1.7 0 00-1.55-1H3a2 2 0 010-4h.09A1.7 1.7 0 004.6 9a1.7 1.7 0 00-.34-1.87l-.06-.06a2 2 0 112.83-2.83l.06.06A1.7 1.7 0 009 4.6a1.7 1.7 0 001-1.55V3a2 2 0 014 0v.09a1.7 1.7 0 001 1.55 1.7 1.7 0 001.87-.34l.06-.06a2 2 0 112.83 2.83l-.06.06A1.7 1.7 0 0019.4 9c.14.36.5 1 1.55 1H21a2 2 0 010 4h-.09a1.7 1.7 0 00-1.51 1z"/>',
 };
-const DEPARTMENTS = ['Content','Design','Social Media','SEO','Email Marketing','Operations','PR','Leadership'];
-const CATEGORIES = ['Newsletter','Social Post','Blog Article','Campaign Report','Banner Design','SEO Audit','Press Release','Client Deliverable'];
+const DEPARTMENTS = ['Content','Design','Social Media','SEO','Email Marketing','Operations','PR','Leadership','Tech'];
+const CATEGORIES = ['Newsletter','Social Post','Blog Article','Campaign Report','Banner Design','SEO Audit','Press Release','Client Deliverable','Hiring','Website','Market Research'];
 
 const APPROVED_ROSTER = {
   'rishabh@accubooks.in': {name:'Rishabh', role:'admin', department:'Marketing'},
@@ -469,6 +474,7 @@ const APPROVED_ROSTER = {
   'mahak@accubooks.in': {name:'Mahak', role:'user', department:'Design'},
   'batrasaanvi2306@gmail.com': {name:'Saanvi', role:'user', department:'Social Media'},
   'stutisaini3@gmail.com': {name:'Stuti', role:'user', department:'Social Media'},
+  'kunwar@accubooks.in': {name:'Kunwar', role:'user', department:'Operations'},
 };
 
 function uid(p){ return p + '_' + Math.random().toString(36).slice(2,9); }
@@ -489,6 +495,7 @@ function timeAgo(ts){
 function userColor(u){ const idx = STATE.users.findIndex(x=>x.id===u.id) % 6; return `var(--cat-${(idx<0?0:idx)+1})`; }
 function userById(id){ return STATE.users.find(u=>u.id===id); }
 function taskById(id){ return STATE.tasks.find(t=>t.id===id); }
+function distinctProjects(){ return [...new Set(STATE.tasks.map(t=>t.project).filter(Boolean))].sort(); }
 
 /* ================= STATE ================= */
 let STATE = { currentUserId:null, users:[], tasks:[], notifications:[], holidays:[], slaDefaults:{High:24,Medium:48,Low:72} };
@@ -497,6 +504,7 @@ let STATE = { currentUserId:null, users:[], tasks:[], notifications:[], holidays
 function currentUser(){ return userById(STATE.currentUserId); }
 function isSuper(){ const u=currentUser(); return !!u && u.role==='super_admin'; }
 function isAdmin(){ const u=currentUser(); return !!u && (u.role==='admin' || u.role==='super_admin'); }
+function canAssignAnyone(){ const u=currentUser(); return !!u && (isAdmin() || u.canAssignOthers===true); }
 
 function showLoginError(msg){ const el=document.getElementById('login-error'); el.textContent=msg; el.style.display='block'; }
 function hideLoginError(){ const el=document.getElementById('login-error'); el.style.display='none'; }
@@ -931,13 +939,14 @@ async function setStatus(task, status, extra){
   }catch(e){ toast('Update failed: '+(e.message||'permission denied')); return; }
   if(status==='Completed' && prev!=='Completed'){ await maybeSpawnRecurring(task); }
 }
-async function submitForApproval(taskId, comment, links){
+async function submitForApproval(taskId, comment, links, attachments){
   const t = taskById(taskId);
-  t.comments = t.comments||[]; t.proofLinks = t.proofLinks||[];
+  t.comments = t.comments||[]; t.proofLinks = t.proofLinks||[]; t.attachments = t.attachments||[];
   t.comments.push({id:uid('cm'), userId:STATE.currentUserId, text:comment, ts:new Date().toISOString()});
   t.proofLinks.push(...links);
+  t.attachments.push(...(attachments||[]));
   const {db, doc, updateDoc} = window.__fb;
-  try{ await updateDoc(doc(db,'tasks',t.id), {comments:t.comments, proofLinks:t.proofLinks}); }
+  try{ await updateDoc(doc(db,'tasks',t.id), {comments:t.comments, proofLinks:t.proofLinks, attachments:t.attachments}); }
   catch(e){ toast('Submit failed: '+(e.message||'permission denied')); return; }
   await setStatus(t, 'Submitted', {submittedAt:new Date().toISOString()});
   await notify(t.assignedBy, 'submitted', `${currentUser().name} submitted "${t.title}" for approval.`, t.id);
@@ -997,7 +1006,8 @@ async function duplicateTask(taskId){
 }
 
 /* ================= FILTER STATE ================= */
-let FILTERS = {q:'', status:'', priority:'', category:'', assignee:'', dept:''};
+function emptyFilters(){ return {q:'', status:[], priority:[], category:[], project:[], assignee:[], overdue:false, dueToday:false}; }
+let FILTERS = emptyFilters();
 let SELECTED_TASKS = new Set();
 
 function visibleTasks(){
@@ -1006,16 +1016,54 @@ function visibleTasks(){
   if(role==='user') list = list.filter(t=>t.assignedTo===STATE.currentUserId);
   if(FILTERS.q){
     const q = FILTERS.q.toLowerCase();
-    list = list.filter(t=> t.title.toLowerCase().includes(q) || (t.tags||[]).join(' ').toLowerCase().includes(q) || (userById(t.assignedTo)||{name:''}).name.toLowerCase().includes(q) || t.category.toLowerCase().includes(q));
+    list = list.filter(t=> t.title.toLowerCase().includes(q) || (t.tags||[]).join(' ').toLowerCase().includes(q) || (userById(t.assignedTo)||{name:''}).name.toLowerCase().includes(q) || t.category.toLowerCase().includes(q) || (t.project||'').toLowerCase().includes(q));
   }
-  if(FILTERS.status) list = list.filter(t=>t.status===FILTERS.status);
-  if(FILTERS.priority) list = list.filter(t=>t.priority===FILTERS.priority);
-  if(FILTERS.category) list = list.filter(t=>t.category===FILTERS.category);
-  if(FILTERS.assignee) list = list.filter(t=>t.assignedTo===FILTERS.assignee);
-  if(FILTERS.dept) list = list.filter(t=>t.department===FILTERS.dept);
+  if(FILTERS.status.length) list = list.filter(t=>FILTERS.status.includes(t.status));
+  if(FILTERS.priority.length) list = list.filter(t=>FILTERS.priority.includes(t.priority));
+  if(FILTERS.category.length) list = list.filter(t=>FILTERS.category.includes(t.category));
+  if(FILTERS.project.length) list = list.filter(t=>FILTERS.project.includes(t.project||''));
+  if(FILTERS.assignee.length) list = list.filter(t=>FILTERS.assignee.includes(t.assignedTo));
+  if(FILTERS.overdue) list = list.filter(t=>isOverdue(t));
+  if(FILTERS.dueToday){ const today=isoDate(new Date()); list = list.filter(t=>t.dueDate===today && t.status!=='Completed'); }
   return list;
 }
 function onGlobalSearch(v){ FILTERS.q = v; const hash = location.hash.replace('#/','')||'dashboard'; if(hash==='tasks') renderTasks(); }
+
+/* ---- reusable multi-select filter dropdown ---- */
+function multiSelectHTML(key, label, options){
+  const selected = FILTERS[key];
+  const btnLabel = selected.length ? `${label} (${selected.length})` : label;
+  return `<div style="position:relative" class="msel-wrap">
+    <button type="button" class="btn sm ${selected.length?'primary':''}" onclick="toggleMultiSelect('${key}')">${btnLabel} &#9662;</button>
+    <div class="dropdown hidden msel-panel" id="msel-${key}" style="min-width:190px;right:auto;left:0;top:34px">
+      <div class="dropdown-body" style="padding:6px 0">
+        ${options.map(o=>{
+          const val = typeof o==='object'?o.value:o, lab = typeof o==='object'?o.label:o;
+          const checked = selected.includes(val);
+          return `<label style="display:flex;align-items:center;gap:8px;padding:6px 14px;cursor:pointer;font-size:12.3px"><input type="checkbox" class="checkbox" ${checked?'checked':''} onchange="toggleFilterValue('${key}', this)" data-val="${val.replace(/"/g,'&quot;')}">${lab}</label>`;
+        }).join('') || '<div class="empty" style="padding:16px">No options yet</div>'}
+      </div>
+      ${selected.length?`<div style="padding:6px 14px;border-top:1px solid var(--border)"><button class="subtle-btn" onclick="clearFilterKey('${key}')">Clear</button></div>`:''}
+    </div>
+  </div>`;
+}
+function toggleMultiSelect(key){
+  document.querySelectorAll('.msel-panel').forEach(el=>{ if(el.id!=='msel-'+key) el.classList.add('hidden'); });
+  document.getElementById('msel-'+key).classList.toggle('hidden');
+}
+function toggleFilterValue(key, checkboxEl){
+  const val = checkboxEl.dataset.val;
+  const arr = FILTERS[key];
+  const idx = arr.indexOf(val);
+  if(idx>=0) arr.splice(idx,1); else arr.push(val);
+  renderTasks();
+  toggleMultiSelect(key);
+}
+function clearFilterKey(key){ FILTERS[key] = []; renderTasks(); }
+document.addEventListener('click', (e)=>{
+  if(e.target.closest('.msel-wrap')) return;
+  document.querySelectorAll('.msel-panel').forEach(el=>el.classList.add('hidden'));
+});
 
 /* ================= DASHBOARD ================= */
 function renderDashboard(){
@@ -1036,19 +1084,27 @@ function computeKPIs(){
   const avgApproval = approvedTasks.length ? Math.round(approvedTasks.reduce((a,t)=>a+Math.max(0,daysBetween(t.submittedAt,t.approvedAt)*24 + 6),0)/approvedTasks.length) : 0;
   const avgCompletion = completed ? Math.round(tasks.filter(t=>t.status==='Completed').reduce((a,t)=>a+Math.max(1,daysBetween(t.createdDate,t.updatedDate)),0)/completed) : 0;
   const dueThisWeek = tasks.filter(t=> daysBetween(today,t.dueDate)>=0 && daysBetween(today,t.dueDate)<=7 && !['Completed'].includes(t.status)).length;
+  const dueToday = tasks.filter(t=> t.dueDate===today && t.status!=='Completed').length;
+  const pendingToday = tasks.filter(t=> (t.dueDate<=today) && !['Completed'].includes(t.status)).length;
   const overduePct = total ? Math.round((overdue/total)*100) : 0;
   const slaOk = approvedTasks.filter(t=>t.submittedAt && (new Date(t.approvedAt)-new Date(t.submittedAt))/3600000 <= (t.slaHours||48)).length;
   const slaPerf = approvedTasks.length ? Math.round((slaOk/approvedTasks.length)*100) : 100;
-  return {total, byStatus, overdue, completed, rate, avgApproval, avgCompletion, dueThisWeek, overduePct, slaPerf};
+  return {total, byStatus, overdue, completed, rate, avgApproval, avgCompletion, dueThisWeek, dueToday, pendingToday, overduePct, slaPerf};
 }
 
-function kpiCard(label, value, sub, spark){
-  return `<div class="card kpi-card">
+function kpiCard(label, value, sub, spark, onclick){
+  return `<div class="card kpi-card" ${onclick?`style="cursor:pointer" onclick="${onclick}"`:''}>
     <div class="kpi-top"><span class="kpi-label">${label}</span></div>
     <div class="kpi-value num">${value}</div>
     <div class="card-sub">${sub||''}</div>
     ${spark?`<div class="kpi-spark">${sparkline(spark)}</div>`:''}
   </div>`;
+}
+function goToTasksFiltered(kind){
+  FILTERS = emptyFilters();
+  if(kind==='overdue') FILTERS.overdue = true;
+  if(kind==='dueToday') FILTERS.dueToday = true;
+  location.hash = '#/tasks';
 }
 
 function adminDashboardHTML(){
@@ -1105,7 +1161,9 @@ function adminDashboardHTML(){
     ${kpiCard('Approved', k.byStatus('Approved'))}
     ${kpiCard('Rejected', k.byStatus('Rejected'))}
     ${kpiCard('Completed', k.byStatus('Completed'))}
-    ${kpiCard('Overdue', k.overdue, k.overdue?'<span style="color:var(--crit)">Needs attention</span>':'On track')}
+    ${kpiCard('Overdue', k.overdue, k.overdue?'<span style="color:var(--crit)">Needs attention</span>':'On track', null, "goToTasksFiltered('overdue')")}
+    ${kpiCard('Due Today', k.dueToday, 'across the org', null, "goToTasksFiltered('dueToday')")}
+    ${kpiCard('Pending as of Today', k.pendingToday, 'overdue + due today, still open')}
   </div>
 
   <div class="grid grid-kpi" style="margin-bottom:14px">
@@ -1187,9 +1245,9 @@ function userDashboardHTML(){
   </div>
   <div class="grid grid-kpi" style="margin-bottom:14px">
     ${kpiCard('My Tasks', mine.length)}
-    ${kpiCard('Due Today', dueToday.length)}
+    ${kpiCard('Due Today', dueToday.length, '', null, "goToTasksFiltered('dueToday')")}
     ${kpiCard('Upcoming (7d)', upcoming.length)}
-    ${kpiCard('Overdue', overdue.length, overdue.length?'<span style="color:var(--crit)">Act now</span>':'None — nice')}
+    ${kpiCard('Overdue', overdue.length, overdue.length?'<span style="color:var(--crit)">Act now</span>':'None — nice', null, "goToTasksFiltered('overdue')")}
   </div>
   <div class="grid grid-kpi" style="margin-bottom:14px">
     ${kpiCard('Pending Approval', pending.length)}
@@ -1234,34 +1292,26 @@ function renderTasks(){
     </div>
   </div>
   <div class="toolbar">
-    <input type="text" class="field-input" placeholder="Search…" value="${FILTERS.q}" oninput="FILTERS.q=this.value;renderTasks()" style="width:200px">
-    <select onchange="FILTERS.status=this.value;renderTasks()">
-      <option value="">All statuses</option>
-      ${['Pending','In Progress','Submitted','Approved','Rejected','Completed'].map(s=>`<option ${FILTERS.status===s?'selected':''}>${s}</option>`).join('')}
-    </select>
-    <select onchange="FILTERS.priority=this.value;renderTasks()">
-      <option value="">All priorities</option>
-      ${['High','Medium','Low'].map(s=>`<option ${FILTERS.priority===s?'selected':''}>${s}</option>`).join('')}
-    </select>
-    <select onchange="FILTERS.category=this.value;renderTasks()">
-      <option value="">All categories</option>
-      ${CATEGORIES.map(s=>`<option ${FILTERS.category===s?'selected':''}>${s}</option>`).join('')}
-    </select>
-    ${isAdmin()?`<select onchange="FILTERS.assignee=this.value;renderTasks()">
-      <option value="">All assignees</option>
-      ${STATE.users.map(u=>`<option value="${u.id}" ${FILTERS.assignee===u.id?'selected':''}>${u.name}</option>`).join('')}
-    </select>`:''}
-    <button class="btn ghost sm" onclick="FILTERS={q:'',status:'',priority:'',category:'',assignee:'',dept:''};renderTasks()">Clear filters</button>
+    <input type="text" class="field-input" placeholder="Search…" value="${FILTERS.q}" oninput="FILTERS.q=this.value;renderTasks()" style="width:180px">
+    <button class="btn sm ${FILTERS.overdue?'danger':''}" style="${FILTERS.overdue?'background:var(--crit-soft);border-color:var(--crit)':''}" onclick="FILTERS.overdue=!FILTERS.overdue;renderTasks()">Overdue</button>
+    <button class="btn sm" style="${FILTERS.dueToday?'background:var(--accent-soft);border-color:var(--accent);color:var(--accent)':''}" onclick="FILTERS.dueToday=!FILTERS.dueToday;renderTasks()">Due Today</button>
+    <div class="sep"></div>
+    ${multiSelectHTML('status','Status', ['Pending','In Progress','Submitted','Approved','Rejected','Completed'])}
+    ${multiSelectHTML('priority','Priority', ['High','Medium','Low'])}
+    ${multiSelectHTML('category','Category', CATEGORIES)}
+    ${multiSelectHTML('project','Project', distinctProjects())}
+    ${isAdmin()?multiSelectHTML('assignee','Assignee', STATE.users.map(u=>({value:u.id,label:u.name}))):''}
+    <button class="btn ghost sm" onclick="FILTERS=emptyFilters();renderTasks()">Clear filters</button>
   </div>
   ${SELECTED_TASKS.size ? bulkBarHTML() : ''}
   <div class="table-wrap card" style="padding:0">
   <table>
     <thead><tr>
       <th><input type="checkbox" class="checkbox" onchange="toggleSelectAll(this.checked)"></th>
-      <th>Task</th><th>Assignee</th><th>Category</th><th>Priority</th><th>Due</th><th>Status</th><th></th>
+      <th>Task</th><th>Project</th><th>Assignee</th><th>Category</th><th>Priority</th><th>Due</th><th>Status</th><th></th>
     </tr></thead>
     <tbody>
-      ${list.map(t=>taskRowHTML(t)).join('') || `<tr><td colspan="8" class="empty">No tasks match your filters</td></tr>`}
+      ${list.map(t=>taskRowHTML(t)).join('') || `<tr><td colspan="9" class="empty">No tasks match your filters</td></tr>`}
     </tbody>
   </table>
   </div>`;
@@ -1271,6 +1321,7 @@ function taskRowHTML(t){
   return `<tr class="taskrow">
     <td onclick="event.stopPropagation()"><input type="checkbox" class="checkbox" ${SELECTED_TASKS.has(t.id)?'checked':''} onchange="toggleSelectTask('${t.id}',this.checked)"></td>
     <td class="titlecell" onclick="openTaskDetail('${t.id}')">${t.title}${t.recurrence?' <span class="tag">recurring</span>':''}</td>
+    <td onclick="openTaskDetail('${t.id}')">${t.project?`<span class="tag">${t.project}</span>`:'<span class="card-sub">—</span>'}</td>
     <td onclick="openTaskDetail('${t.id}')"><div class="userchip"><div class="avatar" style="background:${userColor(u)}">${initials(u.name)}</div>${u.name.split(' ')[0]}</div></td>
     <td onclick="openTaskDetail('${t.id}')">${t.category}</td>
     <td onclick="openTaskDetail('${t.id}')">${pill(t.priority,'pr')}</td>
@@ -1373,6 +1424,7 @@ function kcardHTML(t){
   const u = userById(t.assignedTo) || {name:'Unknown'};
   return `<div class="kcard" draggable="true" data-id="${t.id}" ondragstart="onKanbanDragStart(event)" ondragend="this.classList.remove('dragging')" onclick="openTaskDetail('${t.id}')">
     <div class="kcard-title">${t.title}</div>
+    ${t.project?`<span class="tag" style="margin-bottom:6px;display:inline-block">${t.project}</span>`:''}
     <div class="kcard-meta">
       <div class="userchip"><div class="avatar" style="background:${userColor(u)}">${initials(u.name)}</div></div>
       ${pill(t.priority,'pr')}
@@ -1492,7 +1544,7 @@ function renderTeam(){
   const root = document.getElementById('view-root');
   root.innerHTML = `<div class="view-head"><div><h2>Team &amp; Users</h2><p>${STATE.users.filter(u=>u.active).length} active members</p></div></div>
     <div class="card" style="margin-bottom:14px"><p class="card-sub">New teammates join by opening this app and using "Create your account" with their approved company email — no manual invite needed. To add someone new to the roster, update the approved list in Settings &rarr; Firestore rules.</p></div>
-    <div class="card" style="padding:0"><div class="table-wrap"><table><thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Department</th><th>Open Tasks</th><th>Status</th><th></th></tr></thead><tbody>
+    <div class="card" style="padding:0"><div class="table-wrap"><table><thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Department</th><th>Open Tasks</th><th>Task Access</th><th>Status</th><th></th></tr></thead><tbody>
     ${STATE.users.map(u=>{
       const open = STATE.tasks.filter(t=>t.assignedTo===u.id && !['Completed'].includes(t.status)).length;
       return `<tr>
@@ -1501,6 +1553,7 @@ function renderTeam(){
         <td>${isSuper()?`<select onchange="changeRole('${u.id}',this.value)">${['user','admin','super_admin'].map(r=>`<option value="${r}" ${u.role===r?'selected':''}>${roleLabel(r)}</option>`).join('')}</select>`:roleLabel(u.role)}</td>
         <td>${u.department}</td>
         <td class="num">${open}</td>
+        <td>${u.role==='user' ? (isSuper() ? `<label style="display:flex;align-items:center;gap:6px;cursor:pointer;white-space:nowrap"><input type="checkbox" class="checkbox" ${u.canAssignOthers?'checked':''} onchange="toggleCanAssignOthers('${u.id}',this.checked)">Can assign to others</label>` : (u.canAssignOthers?'<span class="pill status-Approved">Can assign to others</span>':'<span class="card-sub">Self only</span>')) : '<span class="card-sub">—</span>'}</td>
         <td>${u.active?'<span class="pill status-Approved">Active</span>':'<span class="pill status-Rejected">Inactive</span>'}</td>
         <td style="white-space:nowrap">
           ${isSuper()?`<button class="btn sm" onclick="resetUserPassword('${u.id}')" title="Email a password reset link">Reset password</button>`:''}
@@ -1509,6 +1562,12 @@ function renderTeam(){
       </tr>`;
     }).join('')}
     </tbody></table></div></div>`;
+}
+async function toggleCanAssignOthers(id, val){
+  const {db, doc, updateDoc} = window.__fb;
+  const u = userById(id);
+  try{ await updateDoc(doc(db,'users',id), {canAssignOthers: val}); toast(u.name+(val?' can now assign tasks to others':' can now only self-assign')); }
+  catch(e){ toast('Could not update: '+(e.message||'permission denied')); }
 }
 async function resetUserPassword(id){
   const u = userById(id); if(!u) return;
@@ -1613,6 +1672,7 @@ function taskDetailHTML(t){
     <p class="card-sub">${t.description || 'No description provided.'}</p>
 
     <div class="meta-grid">
+      ${t.project?`<div><span class="k">Project</span><br>${t.project}</div>`:''}
       <div><span class="k">Assigned to</span><br>${assignee.name}</div>
       <div><span class="k">Assigned by</span><br>${assigner.name}</div>
       <div><span class="k">Category</span><br>${t.category}</div>
@@ -1635,7 +1695,7 @@ function taskDetailHTML(t){
 
     <div class="section-title">Proof of Completion</div>
     ${proofLinks.length? proofLinks.map(l=>`<div class="proof-link"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007 0l3-3a5 5 0 00-7-7l-1.5 1.5"/><path d="M14 11a5 5 0 00-7 0l-3 3a5 5 0 007 7l1.5-1.5"/></svg><a href="${l.url}" target="_blank" rel="noopener noreferrer">${l.type}: ${l.url}</a></div>`).join('') : '<div class="card-sub">No proof submitted yet</div>'}
-    ${attachments.length? `<div style="margin-top:6px">${attachments.map(a=>`<span class="att-chip">&#128206; ${a.name}</span>`).join('')}</div>`:''}
+    ${attachments.length? `<div style="margin-top:6px">${attachments.map(a=>`<a class="att-chip" href="${a.url}" target="_blank" rel="noopener noreferrer" style="text-decoration:none">&#128206; ${a.name}</a>`).join('')}</div>`:''}
 
     ${t.status==='Rejected' && t.rejectionNotes ? `<div class="card" style="background:var(--crit-soft);border-color:transparent;margin:10px 0"><b style="font-size:12px;color:var(--crit)">Rejection notes</b><div class="card-sub" style="color:var(--crit)">${t.rejectionNotes}</div></div>` : ''}
     ${t.status==='Approved'||t.status==='Completed' ? `<div class="card" style="background:var(--good-soft);border-color:transparent;margin:10px 0"><b style="font-size:12px;color:var(--good)">Approved by ${t.approvedBy && userById(t.approvedBy) ? userById(t.approvedBy).name : ''} · ${t.approvedAt?fmtDateTime(t.approvedAt):''}</b>${t.approvalNotes?`<div class="card-sub" style="color:var(--good)">${t.approvalNotes}</div>`:''}</div>` : ''}
@@ -1679,8 +1739,12 @@ function openSubmitModal(taskId){
         <select id="sub-link-type">${['Instagram','LinkedIn','Facebook','Twitter/X','Google Drive','YouTube','Website'].map(o=>`<option>${o}</option>`).join('')}</select>
       </div>
       <div class="form-row"><label>Proof link URL</label><input type="text" id="sub-link-url" placeholder="https://…"></div>
+      <div class="form-row"><label>Attach files (optional)</label>
+        <input type="file" id="sub-files" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,image/*">
+        <div class="fieldnote">PDF, Word, Excel, PowerPoint or images — up to 15MB each, 5 files max.</div>
+      </div>
       <div class="fieldnote" style="margin-bottom:10px">You can add more links or files after submitting, via comments.</div>
-      <button class="btn primary" style="width:100%;justify-content:center" onclick="confirmSubmit('${taskId}')">Submit for Approval</button>
+      <button class="btn primary" style="width:100%;justify-content:center" id="sub-btn" onclick="confirmSubmit('${taskId}')">Submit for Approval</button>
     </div>`;
   document.getElementById('modal-overlay').classList.remove('hidden');
 }
@@ -1690,7 +1754,29 @@ async function confirmSubmit(taskId){
   const url = document.getElementById('sub-link-url').value.trim();
   const type = document.getElementById('sub-link-type').value;
   const links = url ? [{type, url}] : [];
-  await submitForApproval(taskId, comment, links);
+  const files = [...document.getElementById('sub-files').files];
+  if(files.length > 5) return toast('Please attach at most 5 files');
+  if(files.some(f=>f.size > 15*1024*1024)) return toast('Each file must be under 15MB');
+  const btn = document.getElementById('sub-btn');
+  let attachments = [];
+  if(files.length){
+    btn.disabled = true; btn.textContent = 'Uploading files…';
+    try{
+      const {storage, ref, uploadBytes, getDownloadURL} = window.__fb;
+      for(const f of files){
+        const path = `task-attachments/${taskId}/${Date.now()}_${f.name}`;
+        const fileRef = ref(storage, path);
+        await uploadBytes(fileRef, f);
+        const url = await getDownloadURL(fileRef);
+        attachments.push({name: f.name, url, type: f.type||'file', size: f.size});
+      }
+    }catch(e){
+      toast('File upload failed: '+(e.message||e.code||'error'));
+      btn.disabled = false; btn.textContent = 'Submit for Approval';
+      return;
+    }
+  }
+  await submitForApproval(taskId, comment, links, attachments);
   closeModal(); closeSlideover(); route();
 }
 function openApproveModal(taskId, approve){
@@ -1713,20 +1799,21 @@ function closeModal(){ document.getElementById('modal-overlay').classList.add('h
 function openTaskModal(taskId){
   const t = taskId ? taskById(taskId) : null;
   const allUsers = STATE.users.filter(u=>u.active);
-  const assigneeChoices = isAdmin() ? allUsers : allUsers.filter(u=>u.id===STATE.currentUserId);
+  const assigneeChoices = canAssignAnyone() ? allUsers : allUsers.filter(u=>u.id===STATE.currentUserId);
   document.getElementById('modal-root').innerHTML = `
     <div class="panel-head"><b>${t?'Edit Task':'New Task'}</b><svg class="close-x" onclick="closeModal()" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></div>
     <div class="panel-body">
       <div class="form-row"><label>Title</label><input type="text" id="f-title" value="${t?t.title.replace(/"/g,'&quot;'):''}" placeholder="e.g. Publish Newsletter"></div>
       <div class="form-row"><label>Description</label><textarea id="f-desc">${t?(t.description||''):''}</textarea></div>
       <div class="form-2col">
+        <div class="form-row"><label>Project</label><input type="text" id="f-project" list="project-suggestions" value="${t?(t.project||'').replace(/"/g,'&quot;'):''}" placeholder="e.g. Q4 Launch"><datalist id="project-suggestions">${distinctProjects().map(p=>`<option value="${p.replace(/"/g,'&quot;')}">`).join('')}</datalist></div>
         <div class="form-row"><label>Category</label><select id="f-category">${CATEGORIES.map(c=>`<option ${t&&t.category===c?'selected':''}>${c}</option>`).join('')}</select></div>
-        <div class="form-row"><label>Department</label><select id="f-dept">${DEPARTMENTS.map(d=>`<option ${t&&t.department===d?'selected':''}>${d}</option>`).join('')}</select></div>
       </div>
       <div class="form-2col">
+        <div class="form-row"><label>Department</label><select id="f-dept">${DEPARTMENTS.map(d=>`<option ${t&&t.department===d?'selected':''}>${d}</option>`).join('')}</select></div>
         <div class="form-row"><label>Priority</label><select id="f-priority">${['High','Medium','Low'].map(p=>`<option ${t&&t.priority===p?'selected':''}>${p}</option>`).join('')}</select></div>
-        <div class="form-row"><label>Assign to</label><select id="f-assignee" ${isAdmin()?'':'disabled'}>${assigneeChoices.map(u=>`<option value="${u.id}" ${t&&t.assignedTo===u.id?'selected':''}>${u.name}</option>`).join('')}</select>${isAdmin()?'':'<div class="fieldnote">Users can only assign tasks to themselves.</div>'}</div>
       </div>
+      <div class="form-row"><label>Assign to</label><select id="f-assignee" ${canAssignAnyone()?'':'disabled'}>${assigneeChoices.map(u=>`<option value="${u.id}" ${t&&t.assignedTo===u.id?'selected':''}>${u.name}</option>`).join('')}</select>${canAssignAnyone()?'':'<div class="fieldnote">You can only assign tasks to yourself.</div>'}</div>
       <div class="form-2col">
         <div class="form-row"><label>Due date</label><input type="date" id="f-due" value="${t?t.dueDate:isoDate(new Date())}"></div>
         <div class="form-row"><label>Estimated hours</label><input type="number" id="f-est" value="${t?t.estHours:3}"></div>
@@ -1796,9 +1883,10 @@ async function saveTaskForm(taskId){
     skipHolidays: document.getElementById('f-skip').value==='true', autoAssign:true
   } : null;
   const assigneeEl = document.getElementById('f-assignee');
-  const assignedTo = isAdmin() ? assigneeEl.value : STATE.currentUserId;
+  const assignedTo = canAssignAnyone() ? assigneeEl.value : STATE.currentUserId;
   const fields = {
     title, description: document.getElementById('f-desc').value.trim(),
+    project: document.getElementById('f-project').value.trim(),
     category: document.getElementById('f-category').value, department: document.getElementById('f-dept').value,
     priority: document.getElementById('f-priority').value, assignedTo,
     dueDate: document.getElementById('f-due').value, estHours: +document.getElementById('f-est').value || 1,

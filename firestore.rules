@@ -7,6 +7,8 @@ service cloud.firestore {
     function myRole() { return myDoc().data.role; }
     function isAdmin() { return signedIn() && myRole() in ['admin', 'super_admin']; }
     function isSuper() { return signedIn() && myRole() == 'super_admin'; }
+    function canAssignOthers() { return signedIn() && myDoc().data.canAssignOthers == true; }
+    function canAssignAnyone() { return isAdmin() || canAssignOthers(); }
 
     // Fixed roster: only these pre-approved emails may ever create their own
     // profile document, and only with the exact role assigned here — nobody
@@ -19,7 +21,8 @@ service cloud.firestore {
         'aabhas@naaritive.com': 'super_admin',
         'mahak@accubooks.in': 'user',
         'batrasaanvi2306@gmail.com': 'user',
-        'stutisaini3@gmail.com': 'user'
+        'stutisaini3@gmail.com': 'user',
+        'kunwar@accubooks.in': 'user'
       }[email];
     }
 
@@ -28,12 +31,14 @@ service cloud.firestore {
       allow create: if signedIn() && request.auth.uid == uid
                     && request.resource.data.email == request.auth.token.email
                     && request.resource.data.role == approvedRole(request.auth.token.email)
-                    && request.resource.data.active == true;
+                    && request.resource.data.active == true
+                    && request.resource.data.get('canAssignOthers', false) == false;
       allow update: if signedIn() && (
                       isAdmin() ||
                       (request.auth.uid == uid
                        && request.resource.data.role == resource.data.role
-                       && request.resource.data.active == resource.data.active)
+                       && request.resource.data.active == resource.data.active
+                       && request.resource.data.get('canAssignOthers', false) == resource.data.get('canAssignOthers', false))
                     );
       allow delete: if isSuper();
     }
@@ -42,7 +47,7 @@ service cloud.firestore {
       allow read: if signedIn();
       allow create: if signedIn()
                     && request.resource.data.assignedBy == request.auth.uid
-                    && (isAdmin() || request.resource.data.assignedTo == request.auth.uid);
+                    && (canAssignAnyone() || request.resource.data.assignedTo == request.auth.uid);
       allow update: if signedIn() && (
                       isAdmin() ||
                       (resource.data.assignedTo == request.auth.uid
