@@ -423,9 +423,6 @@
     getFirestore, collection, doc, addDoc, setDoc, updateDoc, deleteDoc, getDoc,
     onSnapshot, query, where
   } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js";
-  import {
-    getStorage, ref, uploadBytes, getDownloadURL
-  } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-storage.js";
 
   const firebaseConfig = {
     projectId: "lsba-dashboard",
@@ -438,13 +435,11 @@
   const fbApp = initializeApp(firebaseConfig);
   const auth = getAuth(fbApp);
   const db = getFirestore(fbApp);
-  const storage = getStorage(fbApp);
   setPersistence(auth, browserLocalPersistence).catch(()=>{});
 
   window.__fb = {
-    auth, db, storage, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, sendPasswordResetEmail,
-    collection, doc, addDoc, setDoc, updateDoc, deleteDoc, getDoc, onSnapshot, query, where,
-    ref, uploadBytes, getDownloadURL
+    auth, db, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, sendPasswordResetEmail,
+    collection, doc, addDoc, setDoc, updateDoc, deleteDoc, getDoc, onSnapshot, query, where
   };
   window.__fbReady = true;
   window.dispatchEvent(new Event('fbready'));
@@ -452,7 +447,7 @@
 
 <script>
 /* ================= APP VERSION ================= */
-const APP_VERSION = '2.4.0';
+const APP_VERSION = '2.4.1';
 const ICONS = {
   dashboard:'<path d="M4 4h7v9H4zM13 4h7v5h-7zM13 12h7v8h-7zM4 16h7v4H4z"/>',
   tasks:'<path d="M4 6h16M4 12h16M4 18h10"/><circle cx="4" cy="6" r="0"/>',
@@ -1739,11 +1734,7 @@ function openSubmitModal(taskId){
         <select id="sub-link-type">${['Instagram','LinkedIn','Facebook','Twitter/X','Google Drive','YouTube','Website'].map(o=>`<option>${o}</option>`).join('')}</select>
       </div>
       <div class="form-row"><label>Proof link URL</label><input type="text" id="sub-link-url" placeholder="https://…"></div>
-      <div class="form-row"><label>Attach files (optional)</label>
-        <input type="file" id="sub-files" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,image/*">
-        <div class="fieldnote">PDF, Word, Excel, PowerPoint or images — up to 15MB each, 5 files max.</div>
-      </div>
-      <div class="fieldnote" style="margin-bottom:10px">You can add more links or files after submitting, via comments.</div>
+      <div class="fieldnote" style="margin-bottom:10px">You can add more links after submitting, via comments.</div>
       <button class="btn primary" style="width:100%;justify-content:center" id="sub-btn" onclick="confirmSubmit('${taskId}')">Submit for Approval</button>
     </div>`;
   document.getElementById('modal-overlay').classList.remove('hidden');
@@ -1754,29 +1745,7 @@ async function confirmSubmit(taskId){
   const url = document.getElementById('sub-link-url').value.trim();
   const type = document.getElementById('sub-link-type').value;
   const links = url ? [{type, url}] : [];
-  const files = [...document.getElementById('sub-files').files];
-  if(files.length > 5) return toast('Please attach at most 5 files');
-  if(files.some(f=>f.size > 15*1024*1024)) return toast('Each file must be under 15MB');
-  const btn = document.getElementById('sub-btn');
-  let attachments = [];
-  if(files.length){
-    btn.disabled = true; btn.textContent = 'Uploading files…';
-    try{
-      const {storage, ref, uploadBytes, getDownloadURL} = window.__fb;
-      for(const f of files){
-        const path = `task-attachments/${taskId}/${Date.now()}_${f.name}`;
-        const fileRef = ref(storage, path);
-        await uploadBytes(fileRef, f);
-        const url = await getDownloadURL(fileRef);
-        attachments.push({name: f.name, url, type: f.type||'file', size: f.size});
-      }
-    }catch(e){
-      toast('File upload failed: '+(e.message||e.code||'error'));
-      btn.disabled = false; btn.textContent = 'Submit for Approval';
-      return;
-    }
-  }
-  await submitForApproval(taskId, comment, links, attachments);
+  await submitForApproval(taskId, comment, links);
   closeModal(); closeSlideover(); route();
 }
 function openApproveModal(taskId, approve){
