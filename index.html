@@ -220,6 +220,7 @@
   /* table */
   table{width:100%;border-collapse:collapse;font-size:12.6px;}
   th{text-align:left;font-size:10.8px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);padding:8px 10px;border-bottom:1px solid var(--border);font-weight:700;white-space:nowrap;}
+  th[onclick]:hover{color:var(--ink);}
   td{padding:9px 10px;border-bottom:1px solid var(--border);vertical-align:middle;}
   tr.taskrow{cursor:pointer;}
   tr.taskrow:hover{background:var(--surface-2);}
@@ -447,7 +448,7 @@
 
 <script>
 /* ================= APP VERSION ================= */
-const APP_VERSION = '2.4.1';
+const APP_VERSION = '2.5.0';
 const ICONS = {
   dashboard:'<path d="M4 4h7v9H4zM13 4h7v5h-7zM13 12h7v8h-7zM4 16h7v4H4z"/>',
   tasks:'<path d="M4 6h16M4 12h16M4 18h10"/><circle cx="4" cy="6" r="0"/>',
@@ -1276,9 +1277,42 @@ function statusLabel(s){ return s; }
 function attachChartHovers(){ ensureTooltip(); }
 
 /* ================= TASKS TABLE VIEW ================= */
+let SORT = {key:'dueDate', dir:'asc'};
+const SORT_RANK = {
+  priority: {High:0, Medium:1, Low:2},
+  status: {Pending:0, 'In Progress':1, Submitted:2, Approved:3, Rejected:4, Completed:5},
+};
+function sortValue(t, key){
+  if(key==='assignee') return (userById(t.assignedTo)||{name:''}).name.toLowerCase();
+  if(key==='project') return (t.project||'').toLowerCase();
+  if(key==='title') return (t.title||'').toLowerCase();
+  if(key==='category') return (t.category||'').toLowerCase();
+  if(key==='priority') return SORT_RANK.priority[t.priority] ?? 9;
+  if(key==='status') return SORT_RANK.status[t.status] ?? 9;
+  if(key==='dueDate') return t.dueDate||'';
+  return '';
+}
+function sortTasks(list){
+  if(!SORT.key) return list;
+  const dir = SORT.dir==='desc' ? -1 : 1;
+  return [...list].sort((a,b)=>{
+    const va = sortValue(a, SORT.key), vb = sortValue(b, SORT.key);
+    if(va < vb) return -1*dir;
+    if(va > vb) return 1*dir;
+    return 0;
+  });
+}
+function setSort(key){
+  if(SORT.key===key) SORT.dir = SORT.dir==='asc' ? 'desc' : 'asc';
+  else { SORT.key = key; SORT.dir = 'asc'; }
+  renderTasks();
+}
+function sortArrow(key){ return SORT.key===key ? (SORT.dir==='asc'?' &#9650;':' &#9660;') : ''; }
+function sortTh(key, label){ return `<th onclick="setSort('${key}')" style="cursor:pointer;user-select:none">${label}${sortArrow(key)}</th>`; }
+
 function renderTasks(){
   const root = document.getElementById('view-root');
-  const list = visibleTasks();
+  const list = sortTasks(visibleTasks());
   root.innerHTML = `
   <div class="view-head"><div><h2>Tasks</h2><p>${list.length} of ${STATE.tasks.length} tasks</p></div>
     <div class="head-actions">
@@ -1303,7 +1337,7 @@ function renderTasks(){
   <table>
     <thead><tr>
       <th><input type="checkbox" class="checkbox" onchange="toggleSelectAll(this.checked)"></th>
-      <th>Task</th><th>Project</th><th>Assignee</th><th>Category</th><th>Priority</th><th>Due</th><th>Status</th><th></th>
+      ${sortTh('title','Task')}${sortTh('project','Project')}${sortTh('assignee','Assignee')}${sortTh('category','Category')}${sortTh('priority','Priority')}${sortTh('dueDate','Due')}${sortTh('status','Status')}<th></th>
     </tr></thead>
     <tbody>
       ${list.map(t=>taskRowHTML(t)).join('') || `<tr><td colspan="9" class="empty">No tasks match your filters</td></tr>`}
